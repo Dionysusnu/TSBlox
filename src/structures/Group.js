@@ -35,7 +35,7 @@ module.exports = class Group extends Base {
 		this.locked = data.isLocked;
 	}
 
-	async fillData() {
+	async getUsers() {
 		const url = 'https://groups.roblox.com/v1/groups/' + this.id + '/users';
 		const initialResponse = await this.client.http.get(url, { params: {
 			limit: 100,
@@ -58,5 +58,6 @@ module.exports = class Group extends Base {
 			}
 		}
 		this.members = new Collection(this.client, responseMembers);
+		return this.members;
 	}
 };
