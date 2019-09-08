@@ -1,5 +1,8 @@
 module.exports = {
 	Client: require('./src/structures/Client'),
+	Collection: require('./src/structures/Collection'),
 	Group: require('./src/structures/Group'),
-	// add other structures later
+	GroupMember: require('./src/structures/GroupMember'),
+	Role: require('./src/structures/Role'),
+	User: require('./src/structures/User'),
 };
