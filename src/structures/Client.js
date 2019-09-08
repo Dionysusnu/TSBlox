@@ -1,3 +1,8 @@
+const HTTP_TIMEOUT = 10000;
+// 10 seconds cooldown
+const HTTP_INTERVAL = 10;
+// 100 requests per second
+
 const EventEmitter = require('events');
 
 const axios = require('axios');
@@ -37,8 +42,8 @@ module.exports = class Client extends EventEmitter {
 				case 429: {
 					clearInterval(this.httpInterval);
 					setTimeout(() => {
-						this.httpInterval = setInterval(() => this.handleHttpQueue(), 100);
-					}, 100);
+						this.httpInterval = setInterval(() => this.handleHttpQueue(), HTTP_INTERVAL);
+					}, HTTP_TIMEOUT);
 				}
 				}
 			});
@@ -54,7 +59,7 @@ module.exports = class Client extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			this.httpQueue.push([url, config, resolve, reject]);
 			if (!this.httpInterval) {
-				this.httpInterval = setInterval(() => this.handleHttpQueue(), 100);
+				this.httpInterval = setInterval(() => this.handleHttpQueue(), HTTP_INTERVAL);
 			}
 		});
 	}
