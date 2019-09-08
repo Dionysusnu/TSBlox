@@ -1,5 +1,12 @@
 const axios = require('axios');
 
+function handleGetQueue(self) {
+	if (self.getQueue.length) {
+		const request = self.getQueue.shift();
+		const response = axios.get(request[0], request[1]);
+		request[2](response); // Change to reject on error
+	}
+}
 module.exports = class Client extends EventEmitter {
 	constructor(cookie) {
 		super()
@@ -8,7 +15,7 @@ module.exports = class Client extends EventEmitter {
 	
 	login(cookie) {
 		// Consistent endpoint for cookie verification
-		axios.get('https://groups.roblox.com/v1/groups/7/audit-log', {
+		this.http.get('https://groups.roblox.com/v1/groups/7/audit-log', {
 			headers: {
 				cookie: '.ROBLOXSECURITY=' + cookie + ';'
 			}
@@ -20,4 +27,17 @@ module.exports = class Client extends EventEmitter {
 			console.error('Invalid cookie?');
 		});
 	}
+	
+	getQueue = [];
+	getInterval = null;
+	http = {
+		function get(url, config) {
+			return new Promise(resolve => {
+				getQueue.push([url, config, resolve]);
+				if (!getInterval) {
+					getInterval = setInterval(handleGetQueue, 100, this);
+				}
+			})
+		}
+	};
 };
