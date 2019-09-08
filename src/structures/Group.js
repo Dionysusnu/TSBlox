@@ -15,7 +15,7 @@ module.exports = class Group extends Base {
 		const owner = client.users.get(data.owner.userId);
 		owner && owner.update(data.owner);
 		this.owner = owner || new User(client, data.owner);
-		this.shout = new Shout(data.shout);
+		this.shout = data.shout && new Shout(data.shout);
 		this.memberCount = data.memberCount;
 		this.isBuildersClubOnly = data.isBuildersClubOnly;
 		this.hasClan = data.hasClan;

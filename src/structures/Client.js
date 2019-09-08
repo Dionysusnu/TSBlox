@@ -11,6 +11,7 @@ module.exports = class Client extends EventEmitter {
 		if (cookie) this.login(cookie);
 		this.groups = new Collection();
 		this.users = new Collection();
+		this.httpQueue = [];
 	}
 
 	login(cookie) {
@@ -24,10 +25,10 @@ module.exports = class Client extends EventEmitter {
 		});
 	}
 
-	handleHttpQueue() {
-		if (this.getQueue.length) {
-			const request = this.getQueue.shift();
-			const response = axios.get(request[0], request[1]);
+	async handleHttpQueue() {
+		if (this.httpQueue.length) {
+			const request = this.httpQueue.shift();
+			const response = await axios.get(request[0], request[1]);
 			request[2](response);
 			// Change to reject on error
 		} else {
@@ -39,18 +40,18 @@ module.exports = class Client extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			this.httpQueue.push([url, config, resolve, reject]);
 			if (!this.httpInterval) {
-				this.httpInterval = setInterval(this.handleHttpQueue, 100);
+				this.httpInterval = setInterval(() => this.handleHttpQueue(), 100);
 			}
 		});
 	}
 
-	getGroup(id) {
-		const response = this.http('https://groups.roblox.com/v1/groups/' + id);
+	async getGroup(id) {
+		const response = await this.http('https://groups.roblox.com/v1/groups/' + id);
 		const cached = this.groups.get(id);
 		if (cached) {
 			cached.update(response);
 			return cached;
 		}
-		return new Group(this, response);
+		return new Group(this, response.data);
 	}
 };
