@@ -17,7 +17,7 @@ module.exports = class Client extends EventEmitter {
 	login(cookie) {
 		this.cookie = cookie;
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
-		this.http.get('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
+		this.http('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
 			this.emit('ready', new Date());
 		}).catch(err => {
 			console.error(err);
@@ -34,6 +34,7 @@ module.exports = class Client extends EventEmitter {
 			// Change to reject on error
 		} else {
 			clearInterval(this.httpInterval);
+			this.httpInterval = null;
 		}
 	}
 

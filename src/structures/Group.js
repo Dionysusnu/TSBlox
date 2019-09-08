@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 const Base = require('./Base');
 const Collection = require('./Collection');
 const GroupMember = require('./GroupMember');
@@ -21,6 +19,7 @@ module.exports = class Group extends Base {
 		this.hasClan = data.hasClan;
 		this.public = data.publicEntryAllowed;
 		this.locked = data.isLocked;
+		this.roles = new Collection();
 		client.groups.set(this.id, this);
 	}
 
@@ -42,19 +41,19 @@ module.exports = class Group extends Base {
 				limit: 100,
 			},
 		});
-		let nextCursor = initialResponse.body.nextPageCursor;
+		let nextCursor = initialResponse.data.nextPageCursor;
 		const responseMembers = [];
-		for (const user of initialResponse.body.data) {
+		for (const user of initialResponse.data.data) {
 			responseMembers.push(new GroupMember(this.client, user, this));
 		}
 		while (nextCursor) {
-			const response = await axios.get(url, { params: {
+			const response = await this.client.http(url, { params: {
 				cursor: nextCursor,
 				limit: 100,
 			},
 			});
-			nextCursor = response.body.nextPageCursor;
-			for (const user of response.body.data) {
+			nextCursor = response.data.nextPageCursor;
+			for (const user of response.data.data) {
 				responseMembers.push(new GroupMember(this.client, user, this));
 			}
 		}

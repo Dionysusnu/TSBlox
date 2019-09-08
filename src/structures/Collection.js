@@ -4,8 +4,4 @@ module.exports = class Collection extends Map {
 		Object.defineProperty(this, 'client', { value: client });
 		if (iterable) for (const item of iterable) this.set(item.id, item);
 	}
-
-	toString() {
-		return 'Collection(' + this.size + ')';
-	}
 };
