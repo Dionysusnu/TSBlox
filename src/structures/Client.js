@@ -29,7 +29,19 @@ module.exports = class Client extends EventEmitter {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue.shift();
 			console.log('http request to ' + request[0]);
-			const response = await axios(request[0], request[1]);
+			const response = await axios(request[0], request[1]).catch(err => {
+				switch(err.response.status) {
+				case 401: {
+					throw new Error('Client not logged in');
+				}
+				case 429: {
+					clearInterval(this.httpInterval);
+					setTimeout(() => {
+						this.httpInterval = setInterval(() => this.handleHttpQueue(), 100);
+					}, 100);
+				}
+				}
+			});
 			request[2](response);
 			// Change to reject on error
 		} else {
