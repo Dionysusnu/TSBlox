@@ -28,7 +28,8 @@ module.exports = class Client extends EventEmitter {
 	async handleHttpQueue() {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue.shift();
-			const response = await axios.get(request[0], request[1]);
+			console.log('http request to ' + request[0]);
+			const response = await axios(request[0], request[1]);
 			request[2](response);
 			// Change to reject on error
 		} else {

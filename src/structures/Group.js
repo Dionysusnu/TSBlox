@@ -37,9 +37,10 @@ module.exports = class Group extends Base {
 
 	async getUsers() {
 		const url = 'https://groups.roblox.com/v1/groups/' + this.id + '/users';
-		const initialResponse = await this.client.http(url, { params: {
-			limit: 100,
-		},
+		const initialResponse = await this.client.http(url, {
+			params: {
+				limit: 100,
+			},
 		});
 		let nextCursor = initialResponse.body.nextPageCursor;
 		const responseMembers = [];
