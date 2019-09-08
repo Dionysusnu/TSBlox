@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Dionysusnu/NodeBlox#readme",
   "dependencies": {
-	  "axios": "0.19.0"
+    "axios": "0.19.0"
   }
 }

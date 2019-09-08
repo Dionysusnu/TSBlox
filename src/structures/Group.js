@@ -12,9 +12,10 @@ module.exports = class Group extends Base {
 	async fillData() {
 		const url = 'https://groups.roblox.com/v1/groups/' + this.id + '/users';
 		const initialResponse = await this.client.http.get(url, { params: {
-			limit: 100
-		}});
-		let nextCursor = response.body.nextPageCursor;
+			limit: 100,
+		},
+		});
+		let nextCursor = initialResponse.body.nextPageCursor;
 		const responseMembers = [];
 		for (const user of initialResponse.body.data) {
 			responseMembers.push(new GroupMember(this.client, user, this));
@@ -22,8 +23,9 @@ module.exports = class Group extends Base {
 		while (nextCursor) {
 			const response = await axios.get(url, { params: {
 				cursor: nextCursor,
-				limit: 100
-			}});
+				limit: 100,
+			},
+			});
 			nextCursor = response.body.nextPageCursor;
 			for (const user of response.body.data) {
 				responseMembers.push(new GroupMember(this.client, user, this));

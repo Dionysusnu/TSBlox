@@ -1,5 +1,6 @@
 const Base = require('./Base');
 const Role = require('./Role');
+const User = require('./User');
 
 module.exports = class GroupMember extends Base {
 	constructor(client, data, group) {
