@@ -6,7 +6,7 @@ module.exports = class GroupMember extends Base {
 		super(client);
 		Object.defineProperty(this, 'user', { value: new User(client, data.user) });
 		Object.defineProperty(this, 'group', { value: group });
-		this.role = group.roles.get(data.role.id) || new Role(client, data, group);
+		this.role = group.roles.get(data.role.id) || new Role(client, data.role, group);
 	}
 	setRole(role) {
 		// WIP
