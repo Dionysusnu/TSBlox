@@ -1,10 +1,11 @@
 const Base = require('./Base');
 
-class User extends Base {
+module.exports = class User extends Base {
 	constructor(client, data) {
-		super(client)
+		super(client);
 		Object.defineProperty(this, 'id', { value: data.userId });
 		this.username = data.username;
-		this.membership = data.buildersClubMembershipType; // One of ['None', 'BC', 'TBC', 'OBC', 'RobloxPremium']
+		this.membership = data.buildersClubMembershipType;
+		// One of ['None', 'BC', 'TBC', 'OBC', 'RobloxPremium']
 	}
-}
+};
