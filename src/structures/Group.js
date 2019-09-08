@@ -3,10 +3,15 @@ const axios = require('axios');
 const Base = require('./Base');
 const Collection = require('./Collection');
 const GroupMember = require('./GroupMember');
+const User = require('./User');
 
 module.exports = class Group extends Base {
-	constructor(client) {
+	constructor(client, data) {
 		super(client);
+		Object.defineProperty(this, 'id', { value: data.id });
+		Object.defineProperty(this, 'name', { value: data.name });
+		this.description = data.description;
+		this.owner = client.users.get(data.owner.userId) || new User(client, data.owner);
 	}
 
 	async fillData() {

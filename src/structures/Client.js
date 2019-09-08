@@ -2,6 +2,8 @@ const EventEmitter = require('events');
 
 const axios = require('axios');
 
+const Group = require('./Group');
+
 module.exports = class Client extends EventEmitter {
 	constructor(cookie) {
 		super();
@@ -10,7 +12,7 @@ module.exports = class Client extends EventEmitter {
 
 	login(cookie) {
 		this.cookie = cookie;
-		// Consistent endpoint for cookie verification
+		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
 		this.http.get('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
 			this.emit('ready', new Date());
 		}).catch(err => {
@@ -37,5 +39,10 @@ module.exports = class Client extends EventEmitter {
 				this.httpInterval = setInterval(this.handleHttpQueue, 100);
 			}
 		});
+	}
+
+	getGroup(id) {
+		const response = this.http('https://groups.roblox.com/v1/groups/' + id);
+		return new Group(this, response);
 	}
 };
