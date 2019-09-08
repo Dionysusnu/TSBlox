@@ -9,7 +9,15 @@ module.exports = class GroupMember extends Base {
 		Object.defineProperty(this, 'group', { value: group });
 		this.role = group.roles.get(data.role.id) || new Role(client, data.role, group);
 	}
-	setRole(role) {
-		// WIP
+	async setRole(role) {
+		const config = {
+			method: 'patch',
+			data: {
+				roleId: role.id,
+			},
+		};
+		await this.client.http('https://groups.roblox.com/v1/groups/' + this.group.id + '/users/' + this.user.id, config);
+		this.role = role;
+		return this;
 	}
 };
