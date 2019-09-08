@@ -13,7 +13,8 @@ module.exports = class Client extends EventEmitter {
 				cookie: '.ROBLOXSECURITY=' + cookie + ';'
 			}
 		}).then(() => {
-			client.cookie = cookie;
+			this.cookie = cookie;
+			this.emit('ready', new Date());
 		}).catch(err => {
 			console.error(err);
 			console.error('Invalid cookie?');
