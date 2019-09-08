@@ -3,6 +3,7 @@ const axios = require('axios');
 const Base = require('./Base');
 const Collection = require('./Collection');
 const GroupMember = require('./GroupMember');
+const Shout = require('./Shout');
 const User = require('./User');
 
 module.exports = class Group extends Base {
@@ -11,7 +12,27 @@ module.exports = class Group extends Base {
 		Object.defineProperty(this, 'id', { value: data.id });
 		Object.defineProperty(this, 'name', { value: data.name });
 		this.description = data.description;
-		this.owner = client.users.get(data.owner.userId) || new User(client, data.owner);
+		const owner = client.users.get(data.owner.userId);
+		owner && owner.update(data.owner);
+		this.owner = owner || new User(client, data.owner);
+		this.shout = new Shout(data.shout);
+		this.memberCount = data.memberCount;
+		this.isBuildersClubOnly = data.isBuildersClubOnly;
+		this.hasClan = data.hasClan;
+		this.public = data.publicEntryAllowed;
+		this.locked = data.isLocked;
+		client.groups.set(this.id, this);
+	}
+
+	update(data) {
+		this.description = data.description;
+		this.owner = this.client.users.get(data.owner.userId) || new User(this.client, data.owner);
+		this.shout = new Shout(data.shout);
+		this.memberCount = data.memberCount;
+		this.isBuildersClubOnly = data.isBuildersClubOnly;
+		this.hasClan = data.hasClan;
+		this.public = data.publicEntryAllowed;
+		this.locked = data.isLocked;
 	}
 
 	async fillData() {

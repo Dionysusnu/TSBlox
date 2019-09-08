@@ -43,6 +43,11 @@ module.exports = class Client extends EventEmitter {
 
 	getGroup(id) {
 		const response = this.http('https://groups.roblox.com/v1/groups/' + id);
+		const cached = this.groups.get(id);
+		if (cached) {
+			cached.update(response);
+			return cached;
+		}
 		return new Group(this, response);
 	}
 };

@@ -9,4 +9,9 @@ module.exports = class User extends Base {
 		client.users.set(this.id, this);
 		// One of ['None', 'BC', 'TBC', 'OBC', 'RobloxPremium']
 	}
+
+	update(data) {
+		this.username = data.username;
+		this.membership = data.buildersClubMembershipType;
+	}
 };
