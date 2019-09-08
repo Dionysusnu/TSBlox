@@ -17,7 +17,7 @@ module.exports = class Group extends Base {
 		let nextCursor = response.body.nextPageCursor;
 		const responseMembers = [];
 		for (const user of initialResponse.body.data) {
-			responseMembers.push(new GroupMember(this.client, user));
+			responseMembers.push(new GroupMember(this.client, user, this));
 		}
 		while (nextCursor) {
 			const response = await axios.get(url, { params: {
@@ -26,7 +26,7 @@ module.exports = class Group extends Base {
 			}});
 			nextCursor = response.body.nextPageCursor;
 			for (const user of response.body.data) {
-				responseMembers.push(new GroupMember(this.client, user));
+				responseMembers.push(new GroupMember(this.client, user, this));
 			}
 		}
 		this.members = new Collection(this.client, members);
