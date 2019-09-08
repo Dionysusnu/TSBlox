@@ -29,6 +29,6 @@ module.exports = class Group extends Base {
 				responseMembers.push(new GroupMember(this.client, user, this));
 			}
 		}
-		this.members = new Collection(this.client, members);
+		this.members = new Collection(this.client, responseMembers);
 	}
 };
