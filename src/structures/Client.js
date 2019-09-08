@@ -2,12 +2,15 @@ const EventEmitter = require('events');
 
 const axios = require('axios');
 
+const Collection = require('./Collection');
 const Group = require('./Group');
 
 module.exports = class Client extends EventEmitter {
 	constructor(cookie) {
 		super();
 		if (cookie) this.login(cookie);
+		this.groups = new Collection();
+		this.users = new Collection();
 	}
 
 	login(cookie) {
