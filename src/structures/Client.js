@@ -57,6 +57,13 @@ module.exports = class Client extends EventEmitter {
 
 	http(url, config) {
 		return new Promise((resolve, reject) => {
+			if (!config) {
+				config = {};
+			}
+			if (!config.headers) {
+				config.headers = {};
+			}
+			config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
 			this.httpQueue.push([url, config, resolve, reject]);
 			if (!this.httpInterval) {
 				this.httpInterval = setInterval(() => this.handleHttpQueue(), HTTP_INTERVAL);
