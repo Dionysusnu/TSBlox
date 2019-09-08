@@ -1,8 +1,9 @@
 const axios = require('axios');
 
 module.exports = class Client extends EventEmitter {
-	constructor() {
+	constructor(cookie) {
 		super()
+		if (cookie) this.login(cookie);
 	}
 	
 	login(cookie) {
