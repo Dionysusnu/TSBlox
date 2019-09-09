@@ -1,7 +1,7 @@
 const Collection = require('./structures/Collection');
 
 module.exports = {
-	function getPages(url, objectType) {
+	function getPages(url, objectType, constructorParent) {
 		// Supported types: [GroupMember, Asset]
 		const initialResponse = await this.client.http(url, {
 			params: {
@@ -21,7 +21,7 @@ module.exports = {
 			});
 			nextCursor = response.data.nextPageCursor;
 			for (const user of response.data.data) {
-				array.push(new objectType(this.client, user, this));
+				array.push(new objectType(this.client, user, constructorParent));
 			}
 		}
 		return new Collection(this.client, array);
