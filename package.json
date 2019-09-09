@@ -1,7 +1,7 @@
 {
   "name": "nodeblox",
   "version": "1.0.0",
-  "description": "",
+  "description": "An object-oriented library to interact with the roblox api",
   "main": "index.js",
   "scripts": {
     "test": "node index.js"
