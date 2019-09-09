@@ -12,7 +12,7 @@ const Group = require('./Group');
 const Util = require('../Util');
 
 /** Client for interacting with the API */
-module.exports = class Client extends EventEmitter {
+class Client extends EventEmitter {
 	/**
 	 * Returns a new client
 	 * @param {string} [cookie] The .ROBLOSECURITY cookie to use when this client makes requests to the API
@@ -104,4 +104,6 @@ module.exports = class Client extends EventEmitter {
 		}
 		return new Group(this, response.data);
 	}
-};
+}
+
+module.exports = Client;
