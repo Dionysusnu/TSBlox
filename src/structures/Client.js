@@ -9,6 +9,7 @@ const axios = require('axios');
 
 const Collection = require('./Collection');
 const Group = require('./Group');
+const Util = require('../Util');
 
 module.exports = class Client extends EventEmitter {
 	constructor(cookie) {
@@ -17,6 +18,7 @@ module.exports = class Client extends EventEmitter {
 		this.groups = new Collection();
 		this.users = new Collection();
 		this.httpQueue = [];
+		this.util = Util;
 	}
 
 	login(cookie) {
