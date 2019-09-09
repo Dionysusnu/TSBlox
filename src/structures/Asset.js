@@ -1,4 +1,6 @@
+/*
 const Base = require('./Base');
+
 
 module.exports = class Asset extends Base {
 	constructor(client, data) {
@@ -7,3 +9,4 @@ module.exports = class Asset extends Base {
 		// gotta figure out the url and response models because asset api is a mess
 	}
 };
+*/
