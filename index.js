@@ -1,5 +1,5 @@
 module.exports = {
-	// Asset: require('./src/structures/Client'),
+	//  Asset: require('./src/structures/Client'),
 	Client: require('./src/structures/Client'),
 	Collection: require('./src/structures/Collection'),
 	Group: require('./src/structures/Group'),
