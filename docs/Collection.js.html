@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: Collection.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,37 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: Collection.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Class to store objects with ID */
+module.exports = class Collection extends Map {
+	/**
+	 * @param {Client} client a Client
+	 * @param {Iterable} iterable an iterable object, which will be used to fill the Collection
+	 */
+	constructor(client, iterable) {
+		super();
+		Object.defineProperty(this, 'client', { value: client });
+		if (iterable) for (const item of iterable) this.set(item.id, item);
+	}
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+	/**
+	 * returns the first value
+	 * @return {*}
+	 */
+	first() {
+		return this.values().next().value;
+	}
+};</code></pre>
+        </article>
+    </section>
 
 
 
