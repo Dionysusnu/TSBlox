@@ -22,11 +22,16 @@ class Client extends EventEmitter {
 		if (cookie) this.login(cookie);
 		/**
 		 * @property {Collection} groups A collection with all cached groups
-		 * @property {Collection} users A collection with all cached users
 		 */
 		this.groups = new Collection();
+		/**
+		 * @property {Collection} users A collection with all cached users
+		 */
 		this.users = new Collection();
 		this.httpQueue = [];
+		/**
+		 * @property {Util} util An object with utility functions, mostly for internal use
+		 */
 		this.util = Util;
 	}
 

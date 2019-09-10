@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: structures/User.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,51 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: structures/User.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Base = require('./Base');
 
+/**
+ * @typedef {('None'|'BC'|'TBC'|'OBC'|'RobloxPremium')} MembershipType
+ */
 
-    <h3> </h3>
+/**
+ * Represents a user on roblox
+ */
+class User extends Base {
+	constructor(client, data) {
+		super(client);
+		/**
+		 * @property {integer} id The id of this user
+		 */
+		Object.defineProperty(this, 'id', { value: data.userId });
+		/**
+		 * @property {string} username The username of this user
+		 */
+		this.username = data.username;
+		/**
+		 * @property {MembershipType} membership The builders club membership type
+		 */
+		this.membership = data.buildersClubMembershipType;
+		client.users.set(this.id, this);
+	}
 
+	update(data) {
+		this.username = data.username;
+		this.membership = data.buildersClubMembershipType;
+	}
+}
 
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = User;</code></pre>
+        </article>
+    </section>
 
 
 

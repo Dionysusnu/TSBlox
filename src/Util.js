@@ -1,6 +1,12 @@
 const Collection = require('./structures/Collection');
 
 module.exports = {
+	/**
+	 * Gets all data from a pages API
+	 * @param {*} url URL to get pages from
+	 * @param {*} objectType The class to construct
+	 * @param {*} constructorParent The object to pass to the class constructor, or an object with a client property
+	 */
 	async getPages(url, objectType, constructorParent) {
 		// Supported types: [GroupMember, Asset]
 		const initialResponse = await constructorParent.client.http(url, {

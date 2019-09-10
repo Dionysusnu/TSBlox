@@ -1,5 +1,5 @@
 /** Class to store objects with ID */
-module.exports = class Collection extends Map {
+class Collection extends Map {
 	/**
 	 * @param {Client} client a Client
 	 * @param {Iterable} iterable an iterable object, which will be used to fill the Collection
@@ -17,4 +17,6 @@ module.exports = class Collection extends Map {
 	first() {
 		return this.values().next().value;
 	}
-};
+}
+
+module.exports = Collection;

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: structures/Shout.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,47 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: structures/Shout.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const Base = require('./Base');
+const User = require('./User');
 
+/**
+ * Represents a group shout.
+ * To create a new shout, use the {NewShout} class.
+ */
+class Shout extends Base {
+	constructor(client, data, group) {
+		super(client);
+		/**
+		 * @property {string} message The content of this shout
+		 */
+		Object.defineProperty(this, 'message', { value: data.body });
+		/**
+		 * @property {User} poster The user that shouted this message
+		 */
+		Object.defineProperty(this, 'poster', { value: client.users.get(data.poster.userId) || new User(client, data.poster) });
+		/**
+		 * @property {string} timeUpdated The time this was shouted at
+		 */
+		Object.defineProperty(this, 'time', { value: data.updated });
+		/**
+		 * @property {Group} group The group this shout belongs to
+		 */
+		Object.defineProperty(this, 'group', { value: group });
+	}
+}
 
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = Shout;</code></pre>
+        </article>
+    </section>
 
 
 
