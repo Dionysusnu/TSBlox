@@ -93,6 +93,30 @@ class Group extends Base {
 		});
 		return new Shout(response);
 	}
+
+	async setDescription(description) {
+		const url = `https://groups.roblox.com/v1/groups/${this.id}/description`;
+		await this.client.http(url, {
+			method: 'patch',
+			data: {
+				description: description,
+			},
+		}).catch(err => {
+			switch(err.response.status) {
+			case 403: {
+				switch(err.response.data.errors[1].code) {
+				case 18: {
+					throw new Error('Description too long');
+				}
+				case 23: {
+					throw new Error('Lacking permissions');
+				}
+				}
+			}
+			}
+		});
+		return this;
+	}
 }
 
 module.exports = Group;
