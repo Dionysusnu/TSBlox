@@ -101,7 +101,7 @@ class Client extends EventEmitter {
 	 * @param {IdResolvable} id The id of the group to get
 	 */
 	async getGroup(id) {
-		const response = await this.http('https://groups.roblox.com/v1/groups/' + id);
+		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`);
 		const cached = this.groups.get(id);
 		if (cached) {
 			cached.update(response.data);
