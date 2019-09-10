@@ -83,7 +83,7 @@ class Group extends Base {
 	 * Shouts on the group
 	 * @param {string} message The content of the shout
 	 */
-	async Shout(message) {
+	async shout(message) {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
 		const response = await this.client.http(url, {
 			method: 'patch',

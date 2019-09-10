@@ -3,7 +3,7 @@ const User = require('./User');
 
 /**
  * Represents a group shout.
- * To create a new shout, use Group.Shout()
+ * To create a new shout, use Group.shout()
  */
 class Shout extends Base {
 	constructor(client, data, group) {
