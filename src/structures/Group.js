@@ -94,6 +94,10 @@ class Group extends Base {
 		return new Shout(response);
 	}
 
+	/**
+	 * Updates the group's description
+	 * @param {string} description The new description for the group
+	 */
 	async setDescription(description) {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/description`;
 		await this.client.http(url, {
@@ -103,6 +107,17 @@ class Group extends Base {
 			},
 		}).catch(err => {
 			switch(err.response.status) {
+			case 400: {
+				switch(err.response.data.errors[1].code) {
+				case 1: {
+					throw new Error('Group is invalid');
+				}
+				case 29: {
+					throw new Error('Empty description not possible');
+				}
+				}
+				break;
+			}
 			case 403: {
 				switch(err.response.data.errors[1].code) {
 				case 18: {
@@ -112,9 +127,11 @@ class Group extends Base {
 					throw new Error('Lacking permissions');
 				}
 				}
+				break;
 			}
 			}
 		});
+		this.description = description;
 		return this;
 	}
 }
