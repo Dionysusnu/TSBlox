@@ -5,6 +5,6 @@ module.exports = {
 	Group: require('./src/structures/Group'),
 	GroupMember: require('./src/structures/GroupMember'),
 	Role: require('./src/structures/Role'),
-	Shout: require('./src/structures/User'),
+	Shout: require('./src/structures/Shout'),
 	User: require('./src/structures/User'),
 };
