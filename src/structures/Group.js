@@ -74,9 +74,24 @@ class Group extends Base {
 	 * Function to retrieve all current members of the group
 	 */
 	async getUsers() {
-		const url = 'https://groups.roblox.com/v1/groups/' + this.id + '/users';
+		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
 		this.members = this.client.getPages(url, GroupMember, this);
 		return this.members;
+	}
+
+	/**
+	 * Shouts on the group
+	 * @param {string} message The content of the shout
+	 */
+	async Shout(message) {
+		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
+		const response = await this.client.http(url, {
+			method: 'patch',
+			data: {
+				message: message,
+			},
+		});
+		return new Shout(response);
 	}
 }
 
