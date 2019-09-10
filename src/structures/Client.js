@@ -57,13 +57,21 @@ class Client extends EventEmitter {
 			const response = await axios(request[0], request[1]).catch(err => {
 				switch(err.response.status) {
 				case 401: {
-					throw new Error('Client not logged in');
+					request[3](new Error('Client not logged in'));
+					break;
+				}
+				case 403: {
+					if(err.response.data.errors[1].code === 0) {
+						request[3](new Error('Cookie verification failed'));
+					}
+					break;
 				}
 				case 429: {
 					clearInterval(this.httpInterval);
 					setTimeout(() => {
 						this.httpInterval = setInterval(() => this.handleHttpQueue(), HTTP_INTERVAL);
 					}, HTTP_TIMEOUT);
+					break;
 				}
 				}
 			});
