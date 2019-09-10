@@ -44,16 +44,15 @@ class Client extends EventEmitter {
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
 		this.http('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
 			this.emit('ready', new Date());
-		}).catch(err => {
-			console.error(err);
-			console.error('Invalid cookie?');
+		}).catch(() => {
+			console.error('Invalid cookie');
 		});
 	}
 
 	async handleHttpQueue() {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue.shift();
-			console.log('http request to ' + request[0]);
+			// console.log('http request to ' + request[0]);
 			const response = await axios(request[0], request[1]).catch(err => {
 				switch(err.response.status) {
 				case 401: {
