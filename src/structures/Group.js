@@ -90,6 +90,23 @@ class Group extends Base {
 			data: {
 				message: message,
 			},
+		}).catch(err => {
+			switch(err.response.status) {
+			case 400: {
+				switch(err.response.data.errors[1].code) {
+				case 1: {
+					throw new Error('Group is invalid');
+				}
+				case 6: {
+					throw new Error('Lacking permissions');
+				}
+				case 7: {
+					throw new Error('Empty shout not possible');
+				}
+				}
+				break;
+			}
+			}
 		});
 		return new Shout(response);
 	}
