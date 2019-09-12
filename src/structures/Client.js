@@ -44,8 +44,6 @@ class Client extends EventEmitter {
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
 		this.http('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
 			this.emit('ready', new Date());
-		}).catch(() => {
-			console.error('Invalid cookie');
 		});
 	}
 
