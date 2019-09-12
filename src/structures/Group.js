@@ -30,9 +30,9 @@ class Group extends Base {
 		owner && owner.update(data.owner);
 		this.owner = owner || new User(client, data.owner);
 		/**
-		 * @property {Shout} shout The current group shout
+		 * @property {Shout} status The current group shout
 		 */
-		this.shout = data.shout && new Shout(client, data.shout);
+		this.status = data.shout && new Shout(client, data.shout);
 		/**
 		 * @property {integer} memberCount The current amount of members in this group
 		 */
@@ -63,7 +63,7 @@ class Group extends Base {
 	update(data) {
 		this.description = data.description;
 		this.owner = this.client.users.get(data.owner.userId) || new User(this.client, data.owner);
-		this.shout = data.shout && new Shout(this.client, data.shout);
+		this.status = data.shout && new Shout(this.client, data.shout);
 		this.memberCount = data.memberCount;
 		this.isBuildersClubOnly = data.isBuildersClubOnly;
 		this.hasClan = data.hasClan;
