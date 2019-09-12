@@ -87,7 +87,8 @@ class Group extends Base {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
 		const response = await this.client.http(url);
 		for (const data of response.data.roles) {
-			this.client.roles.get(data.id).update(data) || new Role(this.client, data, this);
+			const role = this.client.roles.get(data.id);
+			role && role.update(data) || new Role(this.client, data, this);
 		}
 	}
 
