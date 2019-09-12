@@ -85,7 +85,7 @@ class Group extends Base {
 	 */
 	async getRoles() {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
-		const response = this.client.http(url);
+		const response = await this.client.http(url);
 		for (const data of response.data.roles) {
 			this.client.roles.get(data.id).update(data) || new Role(this.client, data, this);
 		}
