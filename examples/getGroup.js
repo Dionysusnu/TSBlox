@@ -1,6 +1,8 @@
-async function doSomething(client) {
+async function doSomething(client, assert) {
 	// Get a group
-	await client.getGroup(1);
+	assert.doesNotReject(async () => {
+		await client.getGroup(1);
+	});
 }
 
 module.exports = doSomething;
