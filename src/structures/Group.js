@@ -75,7 +75,7 @@ class Group extends Base {
 	 */
 	async getUsers() {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
-		this.members = this.client.getPages(url, GroupMember, this);
+		this.members = this.client.util.getPages(url, GroupMember, this);
 		return this.members;
 	}
 

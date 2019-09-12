@@ -58,7 +58,7 @@ class Client extends EventEmitter {
 					break;
 				}
 				case 403: {
-					if(err.response.data.errors[1].code === 0) {
+					if(err.response.data.errors[0].code === 0) {
 						request[3](new Error('Cookie verification failed'));
 					}
 					break;
