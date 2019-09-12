@@ -91,6 +91,7 @@ class Client extends EventEmitter {
 	 * Internal function for making http calls to the API, taking care of cookie and X-CSRF tokens. Can be used for APIs that the library doesn't cover yet
 	 * @param {string} url The url to make an API call to
 	 * @param {Object} config The axios config
+	 * @returns {Promise} Resolves when the request has been made, or rejects if an error occurred
 	 */
 	http(url, config) {
 		return new Promise((resolve, reject) => {
