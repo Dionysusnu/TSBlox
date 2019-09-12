@@ -1,6 +1,10 @@
-const { Client } = require('../NodeRoblox');
+const { Client } = require('..');
 
 const client = new Client();
 
-require('./getGroup')(client);
-require('./getUsers')(client);
+async function doSomething() {
+	await require('./getGroup')(client);
+	await require('./getUsers')(client);
+}
+
+doSomething();
