@@ -1,6 +1,7 @@
 const Base = require('./Base');
 const Collection = require('./Collection');
 const GroupMember = require('./GroupMember');
+const Role = require('./Role');
 const Shout = require('./Shout');
 const User = require('./User');
 
@@ -77,6 +78,17 @@ class Group extends Base {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
 		this.members = this.client.util.getPages(url, GroupMember, this);
 		return this.members;
+	}
+
+	/**
+	 * Function to retrieve all rolesets
+	 */
+	async getRoles() {
+		const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
+		const response = this.client.http(url);
+		for (const data of response.data.roles) {
+			this.client.roles.get(data.id).update(data) || new Role(this.client, data, this);
+		}
 	}
 
 	/**
