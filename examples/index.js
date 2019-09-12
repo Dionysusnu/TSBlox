@@ -4,7 +4,7 @@ const client = new Client();
 
 async function doSomething() {
 	await require('./getGroup')(client);
-	await require('./getUsers')(client);
+	await require('./getRoles')(client);
 }
 
 doSomething();

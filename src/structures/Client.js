@@ -25,6 +25,10 @@ class Client extends EventEmitter {
 		 */
 		this.groups = new Collection();
 		/**
+		 * @property {Collection} roles A collection with all cached roles
+		 */
+		this.roles = new Collection();
+		/**
 		 * @property {Collection} users A collection with all cached users
 		 */
 		this.users = new Collection();
