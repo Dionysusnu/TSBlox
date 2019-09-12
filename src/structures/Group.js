@@ -73,6 +73,7 @@ class Group extends Base {
 
 	/**
 	 * Function to retrieve all current members of the group
+	 * @returns {Collection}
 	 */
 	async getUsers() {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
@@ -82,6 +83,7 @@ class Group extends Base {
 
 	/**
 	 * Function to retrieve all rolesets
+	 * @returns {Collection}
 	 */
 	async getRoles() {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
@@ -90,11 +92,13 @@ class Group extends Base {
 			const role = this.client.roles.get(data.id);
 			role && role.update(data) || new Role(this.client, data, this);
 		}
+		return this.roles;
 	}
 
 	/**
 	 * Shouts on the group
 	 * @param {string} message The content of the shout
+	 * @returns {Shout} The posted shout
 	 */
 	async shout(message) {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
@@ -120,6 +124,7 @@ class Group extends Base {
 				break;
 			}
 			}
+			throw err;
 		});
 		return new Shout(response);
 	}
@@ -127,6 +132,7 @@ class Group extends Base {
 	/**
 	 * Updates the group's description
 	 * @param {string} description The new description for the group
+	 * @returns {Group} This group, with the updated description
 	 */
 	async setDescription(description) {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/description`;
@@ -160,6 +166,7 @@ class Group extends Base {
 				break;
 			}
 			}
+			throw err;
 		});
 		this.description = description;
 		return this;

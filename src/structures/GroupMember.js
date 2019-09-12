@@ -29,6 +29,7 @@ class GroupMember extends Base {
 	/**
 	 * Sets the member's role
 	 * @param {Role} role The new role for this user
+	 * @returns {GroupMember} This member, with the updated role
 	 */
 	async setRole(role) {
 		const config = {
@@ -37,7 +38,33 @@ class GroupMember extends Base {
 				roleId: role.id,
 			},
 		};
-		await this.client.http('https://groups.roblox.com/v1/groups/' + this.group.id + '/users/' + this.user.id, config);
+		await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, config).catch(err => {
+			switch(err.response.status) {
+			case 400: {
+				switch(err.response.data.errors[1].code) {
+				case 1: {
+					throw new Error('Group is invalid');
+				}
+				case 2: {
+					throw new Error('Role is invalid');
+				}
+				case 3: {
+					throw new Error('User is invalid');
+				}
+				}
+				break;
+			}
+			case 403: {
+				switch(err.response.data.errors[1].code) {
+				case 4: {
+					throw new Error('Lacking permissions');
+				}
+				}
+				break;
+			}
+			}
+			throw err;
+		});
 		this.role = role;
 		return this;
 	}

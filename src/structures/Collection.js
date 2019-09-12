@@ -12,7 +12,7 @@ class Collection extends Map {
 
 	/**
 	 * returns the first value
-	 * @return {*}
+	 * @returns {*}
 	 */
 	first() {
 		return this.values().next().value;

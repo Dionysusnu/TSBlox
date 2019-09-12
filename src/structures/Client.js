@@ -74,6 +74,9 @@ class Client extends EventEmitter {
 					}, HTTP_TIMEOUT);
 					break;
 				}
+				case 503: {
+					request[3](new Error('Roblox API error'));
+				}
 				}
 			});
 			request[2](response);
@@ -108,6 +111,7 @@ class Client extends EventEmitter {
 	/**
 	 * Gets a group or updates its cached data
 	 * @param {IdResolvable} id The id of the group to get
+	 * @returns {Group} The requested group
 	 */
 	async getGroup(id) {
 		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`);

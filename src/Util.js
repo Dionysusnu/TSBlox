@@ -6,6 +6,7 @@ module.exports = {
 	 * @param {*} url URL to get pages from
 	 * @param {*} objectType The class to construct
 	 * @param {*} constructorParent The object to pass to the class constructor, or an object with a client property
+	 * @returns {Collection} A collection filled with the retrieved items
 	 */
 	async getPages(url, objectType, constructorParent) {
 		// Supported types: [GroupMember, Asset]
