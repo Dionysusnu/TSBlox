@@ -43,12 +43,11 @@ class Client extends EventEmitter {
 	 * Logs in the client with the given cookie. Can be used after already setting a cookie
 	 * @param {string} cookie The cookie to login with
 	 */
-	login(cookie) {
+	async login(cookie) {
 		this.cookie = cookie;
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
-		this.http('https://groups.roblox.com/v1/groups/7/audit-log').then(() => {
-			this.emit('ready', new Date());
-		});
+		await this.http('https://groups.roblox.com/v1/groups/7/audit-log');
+		this.emit('ready', new Date());
 	}
 
 	async handleHttpQueue() {
