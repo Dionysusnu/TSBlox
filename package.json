@@ -4,7 +4,7 @@
   "description": "An object-oriented library to interact with the roblox api",
   "main": "index.js",
   "scripts": {
-    "test": "node examples/index.js"
+    "test": "node tests/index.js"
   },
   "repository": {
     "type": "git",
