@@ -1,5 +1,8 @@
 const Base = require('./Base');
 
+/**
+ * Represents a roleset in a group
+ */
 class Role extends Base {
 	constructor(client, data, group) {
 		super(client);
