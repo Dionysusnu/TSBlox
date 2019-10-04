@@ -11,11 +11,25 @@ class Collection extends Map {
 	}
 
 	/**
-	 * returns the first value
-	 * @returns {*}
+	 * Returns the first value in this collection
+	 * @returns {*} The first value
 	 */
 	first() {
 		return this.values().next().value;
+	}
+
+	/**
+	 * Returns true if the object is in this collection
+	 * @param {Object} search The object to search for
+	 * @returns {boolean} Whether the object was found
+	 */
+	includes(search) {
+		for (const [, item] of this) {
+			if (item === search) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
