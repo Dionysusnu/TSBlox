@@ -36,7 +36,7 @@ class User extends Base {
 
 	async getBadges() {
 		this.badges = await this.client.util.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge, this).catch(err => {
-			switch(err.response.status) {
+			switch(err.response && err.response.status) {
 			case 404: {
 				switch(err.response.data.errors[1].code) {
 				case 4: {

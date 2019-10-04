@@ -71,7 +71,8 @@ class Client extends EventEmitter {
 			this.debug && console.log(`http request to ${request[0]}`);
 			const response = await axios(request[0], request[1]).catch(err => {
 				this.debug && console.error(`http error: ${err}`);
-				switch(err.response.status) {
+				const errResponse = err.response;
+				switch(errResponse.status) {
 				case 401: {
 					request[3](new Error('Client not logged in'));
 					break;
