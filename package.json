@@ -4,7 +4,8 @@
   "description": "An object-oriented library to interact with the roblox api",
   "main": "src/index.js",
   "scripts": {
-    "test": "node tests/index.js"
+    "test": "node tests/index.js",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,12 @@
   "homepage": "https://github.com/Dionysusnu/NodeBlox#readme",
   "dependencies": {
     "axios": "0.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.7.11",
+    "@typescript-eslint/eslint-plugin": "^2.3.2",
+    "@typescript-eslint/parser": "^2.3.2",
+    "eslint": "^6.5.1",
+    "typescript": "^3.6.3"
   }
 }

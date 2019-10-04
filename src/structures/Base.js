@@ -1,14 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Base class for every library class that has an id
  */
 class Base {
-	constructor(client) {
-		Object.defineProperty(this, 'client', { value: client });
-	}
-
-	valueOf() {
-		return this.id || this;
-	}
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    valueOf() {
+        return this.id;
+    }
 }
-
-module.exports = Base;
+exports.Base = Base;
