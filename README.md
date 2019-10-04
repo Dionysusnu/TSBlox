@@ -1,4 +1,4 @@
-# NodeRoblox
-View the documentation at https://dionysusnu.github.io/NodeRoblox/
+# NodeJS-Roblox
+View the documentation at https://dionysusnu.github.io/NodeJS-Roblox/
 ## Install
-`npm i @dionysusnu/noderoblox`
+`npm i nodejs-roblox`
