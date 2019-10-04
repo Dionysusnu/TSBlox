@@ -5,7 +5,7 @@ const axios = require('axios');
 const Collection = require('./Collection');
 const Group = require('./Group');
 const User = require('./User');
-const Util = require('../Util');
+const Util = require('../util/Util');
 
 /** Client for interacting with the API */
 class Client extends EventEmitter {
