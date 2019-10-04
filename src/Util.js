@@ -3,9 +3,9 @@ const Collection = require('./structures/Collection');
 module.exports = {
 	/**
 	 * Gets all data from a pages API
-	 * @param {*} url URL to get pages from
-	 * @param {*} objectType The class to construct
-	 * @param {*} constructorParent The object to pass to the class constructor, or an object with a client property
+	 * @param {string} url URL to get pages from
+	 * @param {Class} objectType The class to construct
+	 * @param {Object} constructorParent The object to pass to the class constructor, or an object with a client property
 	 * @returns {Collection} A collection filled with the retrieved items
 	 */
 	async getPages(url, objectType, constructorParent) {
