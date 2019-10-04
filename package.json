@@ -1,5 +1,5 @@
 {
-  "name": "@dionysusnu/noderoblox",
+  "name": "NodeJS-Roblox",
   "version": "1.0.1",
   "description": "An object-oriented library to interact with the roblox api",
   "main": "index.js",
