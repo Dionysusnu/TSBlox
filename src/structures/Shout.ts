@@ -1,4 +1,6 @@
-import { Client, Group, User } from '../Structures';
+import { Client } from './Client';
+import { Group } from './Group';
+import { User } from './User';
 import { UserData } from '../Interfaces';
 export interface ShoutData {
 	body: string;

@@ -1,4 +1,6 @@
-import { Base, Client, Group } from '../Structures';
+import { Base } from './Base';
+import { Client } from './Client';
+import { Group } from './Group';
 
 export interface RoleData {
 	id: number;

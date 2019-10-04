@@ -1,4 +1,4 @@
-import { Client } from '../Structures';
+import { Client } from './Client';
 /**
  * Class to store objects with ID
  */

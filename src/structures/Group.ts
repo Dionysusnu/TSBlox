@@ -1,5 +1,11 @@
 import { AxiosError } from 'axios';
-import { Base, Client, Collection, GroupMember, Role, Shout, User } from '../Structures';
+import { Base } from './Base';
+import { Collection } from './Collection';
+import { Client } from './Client';
+import { User } from './User';
+import { Role } from './Role';
+import { GroupMember } from './GroupMember';
+import { Shout } from './Shout';
 import { ShoutData, UserData } from '../Interfaces';
 
 interface GroupData {

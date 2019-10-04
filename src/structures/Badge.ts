@@ -1,4 +1,8 @@
-import { Base, Client, Collection, User } from '../Structures';
+// import { Base, Client, Collection, User } from '../Structures';
+import { Base } from './Base';
+import { Collection } from './Collection';
+import { Client } from './Client';
+import { User } from './User';
 interface BadgeStatistics {
 	pastDayAwarded: number;
 	totalAwarded: number;

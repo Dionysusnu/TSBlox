@@ -1,5 +1,8 @@
 import { AxiosError } from 'axios';
-import { Base, Badge, Client, Collection } from '../Structures';
+import { Base } from './Base';
+import { Badge } from './Badge';
+import { Collection } from './Collection';
+import { Client } from './Client';
 
 export type BCMembershipType = 'None'|'BC'|'TBC'|'OBC'|'RobloxPremium';
 export interface UserData {

@@ -1,6 +1,11 @@
 import EventEmitter from 'events';
 import axios, { AxiosRequestConfig, AxiosPromise, AxiosError } from 'axios';
-import { Badge, Collection, Group, Role, Util, User } from '../Structures';
+import { Collection } from './Collection';
+import { User } from './User';
+import { Badge } from './Badge';
+import { Role } from './Role';
+import { Group } from './Group';
+import { default as Util } from '../util/Util';
 
 interface HttpRequest {
 	0: string;
@@ -80,6 +85,7 @@ export class Client extends EventEmitter {
 	async handleHttpQueue(): Promise<void> {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue[0];
+			this.httpQueue.shift();
 			this.debug && console.log(`http request to ${request[0]}`);
 			const response = await axios(request[0], request[1]).catch((err: AxiosError) => {
 				this.debug && console.error(`http error: ${err}`);
