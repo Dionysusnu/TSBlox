@@ -18,7 +18,7 @@ export class Collection<stores> extends Map<number, stores> {
 	 * @param {Object} search The object to search for
 	 * @returns {boolean} Whether the object was found
 	 */
-	includes(search: any): boolean {
+	includes(search: stores): boolean {
 		for (const [, item] of this) {
 			if (item === search) {
 				return true;
