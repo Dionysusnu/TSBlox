@@ -24,5 +24,14 @@ class Collection extends Map {
         }
         return false;
     }
+    filter(filterFunction) {
+        const filtered = new Collection(this.client);
+        for (const [id, object] of this) {
+            if (filterFunction(object)) {
+                filtered.set(id, object);
+            }
+        }
+        return filtered;
+    }
 }
 exports.Collection = Collection;

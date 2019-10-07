@@ -2,7 +2,7 @@
   "name": "nodejs-roblox",
   "version": "1.1.0",
   "description": "An object-oriented library to interact with the roblox api",
-  "main": "src/structures/Client.js",
+  "main": "dist/Structures.js",
   "scripts": {
     "test": "node tests/index.js",
     "build": "tsc & typedoc --out ./docs ./src"
