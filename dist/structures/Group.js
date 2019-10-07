@@ -74,7 +74,7 @@ class Group extends Base_1.Base {
      * Function to retrieve all current members of the group
      * @returns {Collection}
      */
-    async getUsers() {
+    async getMembers() {
         const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
         this.members = await this.client.util.getPages(url, GroupMember_1.GroupMember, this);
         return this.members;

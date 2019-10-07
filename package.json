@@ -1,11 +1,12 @@
 {
   "name": "nodejs-roblox",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "An object-oriented library to interact with the roblox api",
   "main": "dist/Structures.js",
   "scripts": {
     "test": "node tests/index.js",
-    "build": "tsc & typedoc --out ./docs ./src"
+    "build": "tsc",
+    "docs": "jsdoc -r -d ./docs ./dist"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,7 @@
     "@typescript-eslint/eslint-plugin": "^2.3.2",
     "@typescript-eslint/parser": "^2.3.2",
     "eslint": "^6.5.1",
-    "typedoc": "^0.15.0",
+    "jsdoc": "^3.6.3",
     "typescript": "^3.6.3"
   }
 }
