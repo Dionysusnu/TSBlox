@@ -1,4 +1,4 @@
-# NodeJS-Roblox
-View the documentation at https://dionysusnu.github.io/NodeJS-Roblox/
+# TSBlox
+View the documentation at https://dionysusnu.github.io/TSBlox/
 ## Install
-`npm i nodejs-roblox`
+`npm i tsblox`
