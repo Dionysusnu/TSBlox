@@ -77,6 +77,9 @@ class Client extends events_1.default {
                 if (errResponse) {
                     switch (errResponse.status) {
                         case 401: {
+                            if (this.cookie) {
+                                request[3](new Error('Invalid cookie'));
+                            }
                             request[3](new Error('Client not logged in'));
                             break;
                         }
@@ -98,6 +101,9 @@ class Client extends events_1.default {
                             break;
                         }
                         default: {
+                            if (errResponse.data.errors[0]) {
+                                request[3](errResponse.data.errors[0].message);
+                            }
                             request[3](err);
                         }
                     }

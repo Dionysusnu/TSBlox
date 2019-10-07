@@ -93,6 +93,9 @@ export class Client extends EventEmitter {
 				if (errResponse) {
 					switch(errResponse.status) {
 					case 401: {
+						if (this.cookie) {
+							request[3](new Error('Invalid cookie'));
+						}
 						request[3](new Error('Client not logged in'));
 						break;
 					}
@@ -114,6 +117,9 @@ export class Client extends EventEmitter {
 						break;
 					}
 					default: {
+						if (errResponse.data.errors[0]) {
+							request[3](errResponse.data.errors[0].message);
+						}
 						request[3](err);
 					}
 					}
