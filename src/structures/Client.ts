@@ -174,11 +174,24 @@ export class Client extends EventEmitter {
 	async getUser(id: number): Promise<User> {
 		const response = await this.http(`https://users.roblox.com/v1/users/${id}`);
 		response.data.userId = response.data.id || response.data.userId;
+		response.data.username = response.data.name || response.data.username;
 		const cached = this.users.get(id);
 		if (cached) {
 			cached.update(response.data);
 			return cached;
 		}
 		return new User(this, response.data);
+	}
+
+	async getUserByName(name: string): Promise<User> {
+		const response = await this.http('https://users.roblox.com/v1/usernames/users', {
+			method: 'POST',
+			data: {
+				usernames: [
+					name,
+				],
+			},
+		});
+		return await this.getUser(response.data.data[0].id);
 	}
 }
