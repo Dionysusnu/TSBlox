@@ -8,6 +8,7 @@ async function doSomething() {
 	await require('./getGroup')(client, assert);
 	await require('./getRoles')(client, assert);
 	await require('./shout')(client, assert);
+	await require('./failLogin')(client, assert);
 }
 
 doSomething();
