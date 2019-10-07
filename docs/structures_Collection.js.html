@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: structures/Collection.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,55 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: structures/Collection.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Class to store objects with ID
+ */
+class Collection extends Map {
+    constructor(client, iterable) {
+        super(iterable);
+        this.client = client;
+    }
+    first() {
+        return this.values().next().value;
+    }
+    /**
+     * Returns true if the object is in this collection
+     * @param {Object} search The object to search for
+     * @returns {boolean} Whether the object was found
+     */
+    includes(search) {
+        for (const [, item] of this) {
+            if (item === search) {
+                return true;
+            }
+        }
+        return false;
+    }
+    filter(filterFunction) {
+        const filtered = new Collection(this.client);
+        for (const [id, object] of this) {
+            if (filterFunction(object)) {
+                filtered.set(id, object);
+            }
+        }
+        return filtered;
+    }
+}
+exports.Collection = Collection;
+</code></pre>
+        </article>
+    </section>
 
 
 
