@@ -13,6 +13,28 @@ export class Collection<stores> extends Map<number, stores> {
 		return this.values().next().value;
 	}
 
+	firstKey(): number {
+		return this.keys().next().value;
+	}
+
+	last(count: number): stores | Array<stores> {
+		const arr = this.array();
+		if (count === undefined) {
+			return arr[arr.length - 1];
+		} else {
+			return arr.slice(-count);
+		}
+	}
+
+	lastKey(count: number): number | Array<number> {
+		const arr = this.keyArray();
+		if (count === undefined) {
+			return arr[arr.length - 1];
+		} else {
+			return arr.slice(-count);
+		}
+	}
+
 	/**
 	 * Returns true if the object is in this collection
 	 * @param {Object} search The object to search for
@@ -35,5 +57,13 @@ export class Collection<stores> extends Map<number, stores> {
 			}
 		}
 		return filtered;
+	}
+
+	array(): Array<stores> {
+		return [...this.values()];
+	}
+
+	keyArray(): Array<number> {
+		return [...this.keys()];
 	}
 }
