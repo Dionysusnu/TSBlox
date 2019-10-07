@@ -26,4 +26,4 @@ async function getPages(url, objectType, constructorParent) {
     }
     return new Collection_1.Collection(constructorParent.client, array);
 }
-exports.getPages = getPages;
+exports.default = getPages;

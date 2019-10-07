@@ -75,7 +75,7 @@ export class Client extends EventEmitter {
 	async login(cookie: string): Promise<void> {
 		this.cookie = cookie;
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
-		const response = await this.http('https://groups.roblox.com/v1/groups/7/audit-log');
+		const response = await this.http('https://groups.roblox.com/v1/groups/7/audit-log').catch(err => err);
 		if (response.status !== 403 || response.data.errors[0].code !== 23) {
 			throw new Error('Invalid cookie');
 		}
@@ -124,6 +124,7 @@ export class Client extends EventEmitter {
 					}
 					}
 				}
+				return err.response;
 			});
 			// If no error, resolve promise
 			request[2](response);

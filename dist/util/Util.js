@@ -7,5 +7,5 @@ exports.default = {
  * @param objectType The class to instantiate
  * @param constructorParent The object to use for the constructor, or an object with a client property
  */
-    getPages: require('./getPages'),
+    getPages: require('./getPages').default,
 };

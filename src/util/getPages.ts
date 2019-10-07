@@ -2,7 +2,7 @@
 import { Base } from '../structures/Base';
 import { Collection } from '../structures/Collection';
 
-export async function getPages(url: string, objectType: any, constructorParent: Base): Promise<Collection<any>> {
+export default async function getPages(url: string, objectType: any, constructorParent: Base): Promise<Collection<any>> {
 	// Supported types: [GroupMember, Asset]
 	const initialResponse = await constructorParent.client.http(url, {
 		params: {
