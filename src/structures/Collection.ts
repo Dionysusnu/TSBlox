@@ -26,4 +26,14 @@ export class Collection<stores> extends Map<number, stores> {
 		}
 		return false;
 	}
+
+	filter(filterFunction: Function): Collection<stores> {
+		const filtered = new Collection<stores>(this.client);
+		for (const [id, object] of this) {
+			if (filterFunction(object)) {
+				filtered.set(id, object);
+			}
+		}
+		return filtered;
+	}
 }
