@@ -20,7 +20,7 @@ export class Client extends EventEmitter {
 	roles: Collection<Role>;
 	users: Collection<User>;
 	httpQueue: HttpRequest[];
-	util: Util;
+	util: Record<string, Function>;
 	httpTimeout: number;
 	httpInterval: number;
 	httpIntervalId?: NodeJS.Timeout;
@@ -53,7 +53,7 @@ export class Client extends EventEmitter {
 		/**
 		 * @property {Util} util An object with utility functions, mostly for internal use
 		 */
-		this.util = new Util();
+		this.util = Util;
 		/**
 		 * @property {integer} httpTimeout The number of ms to wait for when receiving a 429 response from the roblox API
 		 * @default 10000

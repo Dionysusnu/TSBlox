@@ -39,7 +39,7 @@ class Client extends events_1.default {
         /**
          * @property {Util} util An object with utility functions, mostly for internal use
          */
-        this.util = new Util_1.default();
+        this.util = Util_1.default;
         /**
          * @property {integer} httpTimeout The number of ms to wait for when receiving a 429 response from the roblox API
          * @default 10000
