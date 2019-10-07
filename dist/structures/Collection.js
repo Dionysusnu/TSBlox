@@ -11,6 +11,27 @@ class Collection extends Map {
     first() {
         return this.values().next().value;
     }
+    firstKey() {
+        return this.keys().next().value;
+    }
+    last(count) {
+        const arr = this.array();
+        if (count === undefined) {
+            return arr[arr.length - 1];
+        }
+        else {
+            return arr.slice(-count);
+        }
+    }
+    lastKey(count) {
+        const arr = this.keyArray();
+        if (count === undefined) {
+            return arr[arr.length - 1];
+        }
+        else {
+            return arr.slice(-count);
+        }
+    }
     /**
      * Returns true if the object is in this collection
      * @param {Object} search The object to search for
@@ -32,6 +53,12 @@ class Collection extends Map {
             }
         }
         return filtered;
+    }
+    array() {
+        return [...this.values()];
+    }
+    keyArray() {
+        return [...this.keys()];
     }
 }
 exports.Collection = Collection;

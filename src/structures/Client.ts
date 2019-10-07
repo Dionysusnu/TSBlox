@@ -173,6 +173,7 @@ export class Client extends EventEmitter {
 
 	async getUser(id: number): Promise<User> {
 		const response = await this.http(`https://users.roblox.com/v1/users/${id}`);
+		response.data.userId = response.data.id || response.data.userId;
 		const cached = this.users.get(id);
 		if (cached) {
 			cached.update(response.data);

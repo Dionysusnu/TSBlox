@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Collection_1 = require("../structures/Collection");
-async function getPages(url, objectType, constructorParent) {
+async function getPages(url, objectType, constructorParent, transformer) {
     // Supported types: [GroupMember, Asset]
     const initialResponse = await constructorParent.client.http(url, {
         params: {
@@ -10,8 +10,9 @@ async function getPages(url, objectType, constructorParent) {
     });
     let nextCursor = initialResponse.data.nextPageCursor;
     const array = [];
-    for (const user of initialResponse.data.data) {
-        array.push(new objectType(constructorParent.client, user, constructorParent));
+    for (const data of initialResponse.data.data) {
+        const transformedData = transformer && transformer(data) || data;
+        array.push(new objectType(constructorParent.client, transformedData, constructorParent));
     }
     while (nextCursor) {
         const response = await constructorParent.client.http(url, { params: {
@@ -20,8 +21,9 @@ async function getPages(url, objectType, constructorParent) {
             },
         });
         nextCursor = response.data.nextPageCursor;
-        for (const user of response.data.data) {
-            array.push(new objectType(constructorParent.client, user, constructorParent));
+        for (const data of response.data.data) {
+            const transformedData = transformer && transformer(data) || data;
+            array.push(new objectType(constructorParent.client, transformedData, constructorParent));
         }
     }
     return new Collection_1.Collection(constructorParent.client, array);

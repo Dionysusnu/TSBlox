@@ -54,6 +54,7 @@ class Group extends Base_1.Base {
          * @property {boolean} locked If true, the group can't be joined
          */
         this.locked = data.isLocked;
+        this.members = new Collection_1.Collection(this.client);
         /**
          * @property {Collection} roles All known roles in this group
          */
@@ -61,14 +62,41 @@ class Group extends Base_1.Base {
         client.groups.set(this.id, this);
     }
     update(data) {
-        this.description = data.description;
-        this.owner = this.client.users.get(data.owner.userId) || new User_1.User(this.client, data.owner);
-        this.status = data.shout && new Shout_1.Shout(this.client, data.shout, this);
-        this.memberCount = data.memberCount;
-        this.isBuildersClubOnly = data.isBuildersClubOnly;
+        this.description = data.description || this.description; // For short responses
+        this.owner = this.client.users.get(data.owner.userId) || new User_1.User(this.client, data.owner) || this.owner;
+        this.status = data.shout && new Shout_1.Shout(this.client, data.shout, this) || this.shout;
+        this.memberCount = data.memberCount || this.memberCount;
+        this.isBuildersClubOnly = data.isBuildersClubOnly || this.isBuildersClubOnly;
         this.hasClan = data.hasClan;
         this.public = data.publicEntryAllowed;
         this.locked = data.isLocked;
+    }
+    async member(user) {
+        const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`);
+        const userGroups = response.data.data;
+        for (const groupResponse of userGroups) {
+            console.log(groupResponse);
+            if (groupResponse.group.id === this.id) {
+                const cached = this.members.get(user.id);
+                const groupRole = this.roles.get(groupResponse.role.id);
+                if (cached) {
+                    if (cached.role === groupRole) {
+                        cached.role.update(groupResponse.role);
+                    }
+                    else {
+                        cached.role = groupRole || new Role_1.Role(this.client, groupResponse.role, this);
+                    }
+                    return cached;
+                }
+                else {
+                    return new GroupMember_1.GroupMember(this.client, {
+                        role: groupRole || new Role_1.Role(this.client, groupResponse.role, this),
+                        user: user,
+                    }, this);
+                }
+            }
+        }
+        return null;
     }
     /**
      * Function to retrieve all current members of the group
@@ -76,7 +104,12 @@ class Group extends Base_1.Base {
      */
     async getMembers() {
         const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
-        this.members = await this.client.util.getPages(url, GroupMember_1.GroupMember, this);
+        this.members = await this.client.util.getPages(url, GroupMember_1.GroupMember, this, (data) => {
+            return {
+                user: this.client.users.get(data.user.userId) || new User_1.User(this.client, data.user),
+                role: this.roles.get(data.role.id) || new Role_1.Role(this.client, data.role, this),
+            };
+        });
         return this.members;
     }
     /**

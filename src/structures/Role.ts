@@ -6,7 +6,7 @@ export interface RoleData {
 	id: number;
 	name: string;
 	rank: number;
-	memberCount: number;
+	memberCount?: number;
 }
 /**
  * Represents a roleset in a group
@@ -14,7 +14,7 @@ export interface RoleData {
 export class Role extends Base {
 	group: Group;
 	rank: number;
-	memberCount: number;
+	memberCount?: number;
 	constructor(client: Client, data: RoleData, group: Group) {
 		super(client, data.id);
 		/**

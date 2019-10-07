@@ -1,19 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Base_1 = require("./Base");
-const User_1 = require("./User");
-const Role_1 = require("./Role");
 /**
  * Represents a user in a group
  */
 class GroupMember extends Base_1.Base {
     constructor(client, data, group) {
-        const user = new User_1.User(client, data.user);
-        super(client, user.id);
+        super(client, data.user.id);
         /**
          * @property {User} user The user
          */
-        this.user = user;
+        this.user = data.user;
         /**
          * @property {Group} group The group this member is part of
          */
@@ -21,7 +18,7 @@ class GroupMember extends Base_1.Base {
         /**
          * @property {Role} role The current role of this member
          */
-        this.role = group.roles.get(data.role.id) || new Role_1.Role(client, data.role, group);
+        this.role = data.role;
     }
     /**
      * Sets the member's role

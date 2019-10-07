@@ -4,10 +4,9 @@ import { Client } from './Client';
 import { User } from './User';
 import { Group } from './Group';
 import { Role } from './Role';
-import { RoleData, UserData } from '../Interfaces';
 interface GroupMemberData {
-	role: RoleData;
-	user: UserData;
+	role: Role;
+	user: User;
 }
 
 /**
@@ -18,12 +17,11 @@ export class GroupMember extends Base {
 	readonly group: Group;
 	role: Role;
 	constructor(client: Client, data: GroupMemberData, group: Group) {
-		const user = new User(client, data.user);
-		super(client, user.id);
+		super(client, data.user.id);
 		/**
 		 * @property {User} user The user
 		 */
-		this.user = user;
+		this.user = data.user;
 		/**
 		 * @property {Group} group The group this member is part of
 		 */
@@ -31,7 +29,7 @@ export class GroupMember extends Base {
 		/**
 		 * @property {Role} role The current role of this member
 		 */
-		this.role = group.roles.get(data.role.id) || new Role(client, data.role, group);
+		this.role = data.role;
 	}
 
 	/**
