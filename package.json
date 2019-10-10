@@ -1,6 +1,6 @@
 {
   "name": "tsblox",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "An object-oriented library to interact with the roblox api",
   "main": "dist/Structures.js",
   "scripts": {
@@ -22,11 +22,11 @@
     "axios": "0.19.0"
   },
   "devDependencies": {
-    "@types/node": "^12.7.11",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
+    "@types/node": "^12.7.12",
+    "@typescript-eslint/eslint-plugin": "^2.3.3",
+    "@typescript-eslint/parser": "^2.3.3",
     "eslint": "^6.5.1",
     "jsdoc": "^3.6.3",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   }
 }
