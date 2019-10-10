@@ -72,7 +72,8 @@ class Client extends events_1.default {
             this.httpQueue.shift();
             this.debug && console.log(`http request to ${request[0]}`);
             const response = await axios_1.default(request[0], request[1]).catch((err) => {
-                this.debug && console.error(`http error: ${err}`);
+				this.debug && console.error(`http error: ${err}`);
+				this.debug && console.error('response: ', response);
                 const errResponse = err.response;
                 if (errResponse) {
                     switch (errResponse.status) {
