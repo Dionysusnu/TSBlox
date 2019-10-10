@@ -60,11 +60,15 @@ class Client extends events_1.default {
     async login(cookie) {
         this.cookie = cookie;
         // Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
-        const response = await this.http('https://groups.roblox.com/v1/groups/7/audit-log').catch(err => err.response);
-        if (response.status !== 403 || response.data.errors[0].code !== 23) {
-            throw new Error('Invalid cookie');
+        try {
+            await this.http('https://groups.roblox.com/v1/groups/7/audit-log');
         }
-        this.emit('ready', new Date());
+        catch (e) {
+            if (e.message !== 'Lacking permissions') {
+                throw e;
+            }
+            this.emit('ready', new Date());
+        }
     }
     async handleHttpQueue() {
         if (this.httpQueue.length) {
