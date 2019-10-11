@@ -106,7 +106,7 @@ export class Group extends Base {
 		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`);
 		const userGroups = response.data.data;
 		for (const groupResponse of userGroups) {
-			console.log(groupResponse);
+			this.client.debug && console.log(groupResponse);
 			if (groupResponse.group.id === this.id) {
 				const cached = this.members.get(user.id);
 				const groupRole = this.roles.get(groupResponse.role.id);
@@ -164,7 +164,7 @@ export class Group extends Base {
 	async shout(message: string): Promise<Shout> {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
 		const response = await this.client.http(url, {
-			method: 'patch',
+			method: 'PATCH',
 			data: {
 				message: message,
 			},

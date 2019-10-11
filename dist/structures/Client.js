@@ -61,7 +61,9 @@ class Client extends events_1.default {
         this.cookie = cookie;
         // Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
         try {
-            await this.http('https://groups.roblox.com/v1/groups/7/audit-log');
+            await this.http('https://groups.roblox.com/v1/groups/7/status', {
+                method: 'PATCH',
+            }, true);
         }
         catch (e) {
             if (e.message !== 'Lacking permissions') {
@@ -74,11 +76,12 @@ class Client extends events_1.default {
         if (this.httpQueue.length) {
             const request = this.httpQueue[0];
             this.httpQueue.shift();
-            this.debug && console.log(`http request to ${request[0]}`);
+            this.debug && console.log(`${request[1].method || 'GET'} request to ${request[0]}`);
             const response = await axios_1.default(request[0], request[1]).catch((err) => {
                 this.debug && console.error(`http error: ${err}`);
                 const errResponse = err.response;
                 if (errResponse) {
+                    this.debug && console.error(errResponse.data);
                     switch (errResponse.status) {
                         case 401: {
                             if (this.cookie) {
@@ -88,6 +91,7 @@ class Client extends events_1.default {
                             break;
                         }
                         case 403: {
+                            this.debug && console.error(errResponse.data);
                             request[3](new Error('Lacking permissions'));
                             break;
                         }
@@ -107,11 +111,15 @@ class Client extends events_1.default {
                                 request[3](errResponse.data.errors[0].message);
                             }
                             request[3](err);
+                            break;
                         }
                     }
                 }
                 return err.response;
             });
+            if (response && response.headers['x-csrf-token']) {
+                this.token = response.headers['x-csrf-token'];
+            }
             // If no error, resolve promise
             request[2](response);
         }
@@ -126,7 +134,7 @@ class Client extends events_1.default {
      * @param {Object} config The axios config
      * @returns {Promise} Resolves when the request has been made, or rejects if an error occurred
      */
-    http(url, config) {
+    http(url, config, ignoreXCSRF) {
         return new Promise((resolve, reject) => {
             if (!config) {
                 config = {};
@@ -134,7 +142,14 @@ class Client extends events_1.default {
             if (!config.headers) {
                 config.headers = {};
             }
-            config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+            if (this.cookie)
+                config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+            if (this.token) {
+                config.headers['x-csrf-token'] = this.token;
+            }
+            else if (config.method && !ignoreXCSRF) {
+                return reject(new Error('Client not logged in, didn\'t get X-CSRF-token'));
+            }
             this.httpQueue.push([url, config, resolve, reject]);
             if (!this.httpIntervalId) {
                 this.httpIntervalId = setInterval(() => this.handleHttpQueue(), this.httpInterval);
