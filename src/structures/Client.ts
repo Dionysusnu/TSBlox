@@ -109,6 +109,7 @@ export class Client extends EventEmitter {
 				this.token = headers['x-csrf-token'];
 				config.headers['x-csrf-token'] = this.token || '';
 			}
+			this.debug && console.log(config.headers);
 			const response = await axios(request[0], request[1]).catch((err: AxiosError) => {
 				this.debug && console.error(`http error: ${err}`);
 				const errResponse = err.response;

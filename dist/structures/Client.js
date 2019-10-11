@@ -95,6 +95,7 @@ class Client extends events_1.default {
                 this.token = headers['x-csrf-token'];
                 config.headers['x-csrf-token'] = this.token || '';
             }
+            this.debug && console.log(config.headers);
             const response = await axios_1.default(request[0], request[1]).catch((err) => {
                 this.debug && console.error(`http error: ${err}`);
                 const errResponse = err.response;
