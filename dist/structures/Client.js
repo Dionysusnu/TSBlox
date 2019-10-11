@@ -63,7 +63,7 @@ class Client extends events_1.default {
         try {
             await this.http('https://groups.roblox.com/v1/groups/7/status', {
                 method: 'PATCH',
-            }, true);
+            });
         }
         catch (e) {
             if (e.message !== 'Lacking permissions') {
@@ -77,6 +77,24 @@ class Client extends events_1.default {
             const request = this.httpQueue[0];
             this.httpQueue.shift();
             this.debug && console.log(`${request[1].method || 'GET'} request to ${request[0]}`);
+            const url = request[0];
+            const config = request[1];
+            const resolve = request[2];
+            const reject = request[3];
+            if (!config.headers) {
+                config.headers = {};
+            }
+            if (this.cookie)
+                config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+            if (this.token) {
+                config.headers['x-csrf-token'] = this.token || '';
+            }
+            else if (config.method) {
+                const headers = (await axios_1.default(url, config).catch(err => err.response)).headers;
+                this.debug && console.log(headers);
+                this.token = headers['x-csrf-token'];
+                config.headers['x-csrf-token'] = this.token || '';
+            }
             const response = await axios_1.default(request[0], request[1]).catch((err) => {
                 this.debug && console.error(`http error: ${err}`);
                 const errResponse = err.response;
@@ -85,14 +103,14 @@ class Client extends events_1.default {
                     switch (errResponse.status) {
                         case 401: {
                             if (this.cookie) {
-                                request[3](new Error('Invalid cookie'));
+                                reject(new Error('Invalid cookie'));
                             }
-                            request[3](new Error('Client not logged in'));
+                            reject(new Error('Client not logged in'));
                             break;
                         }
                         case 403: {
                             this.debug && console.error(errResponse.data);
-                            request[3](new Error('Lacking permissions'));
+                            reject(new Error('Lacking permissions'));
                             break;
                         }
                         case 429: {
@@ -103,14 +121,20 @@ class Client extends events_1.default {
                             break;
                         }
                         case 503: {
-                            request[3](new Error('Roblox API error'));
+                            reject(new Error('Roblox API error'));
                             break;
                         }
                         default: {
                             if (errResponse.data.errors[0]) {
-                                request[3](errResponse.data.errors[0].message);
+                                if (errResponse.data.errors[0].message === 'Token Validation Failed') {
+                                    this.debug && console.log(errResponse.headers);
+                                    return err.response;
+                                }
+                                else {
+                                    reject(errResponse.data.errors[0].message);
+                                }
                             }
-                            request[3](err);
+                            reject(err);
                             break;
                         }
                     }
@@ -121,7 +145,7 @@ class Client extends events_1.default {
                 this.token = response.headers['x-csrf-token'];
             }
             // If no error, resolve promise
-            request[2](response);
+            resolve(response);
         }
         else {
             this.httpIntervalId && clearInterval(this.httpIntervalId);
@@ -134,22 +158,8 @@ class Client extends events_1.default {
      * @param {Object} config The axios config
      * @returns {Promise} Resolves when the request has been made, or rejects if an error occurred
      */
-    http(url, config, ignoreXCSRF) {
+    http(url, config) {
         return new Promise((resolve, reject) => {
-            if (!config) {
-                config = {};
-            }
-            if (!config.headers) {
-                config.headers = {};
-            }
-            if (this.cookie)
-                config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
-            if (this.token) {
-                config.headers['x-csrf-token'] = this.token;
-            }
-            else if (config.method && !ignoreXCSRF) {
-                return reject(new Error('Client not logged in, didn\'t get X-CSRF-token'));
-            }
             this.httpQueue.push([url, config, resolve, reject]);
             if (!this.httpIntervalId) {
                 this.httpIntervalId = setInterval(() => this.handleHttpQueue(), this.httpInterval);
@@ -162,7 +172,9 @@ class Client extends events_1.default {
      * @returns {Group} The requested group
      */
     async getGroup(id) {
-        const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`);
+        const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`, {
+            method: 'GET',
+        });
         const cached = this.groups.get(id);
         if (cached) {
             cached.update(response.data);
@@ -171,7 +183,9 @@ class Client extends events_1.default {
         return new Group_1.Group(this, response.data);
     }
     async getUser(id) {
-        const response = await this.http(`https://users.roblox.com/v1/users/${id}`);
+        const response = await this.http(`https://users.roblox.com/v1/users/${id}`, {
+            method: 'GET',
+        });
         response.data.userId = response.data.id || response.data.userId;
         response.data.username = response.data.name || response.data.username;
         const cached = this.users.get(id);

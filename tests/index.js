@@ -9,6 +9,7 @@ async function doSomething() {
 	await require('./getRoles')(client, assert);
 	await require('./shout')(client, assert);
 	await require('./failLogin')(client, assert);
+	await assert.doesNotReject(client.getUserByName('thenoobforevernever')); // Yes that's my username
 }
 
 doSomething();

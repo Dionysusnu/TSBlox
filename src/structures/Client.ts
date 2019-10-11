@@ -79,7 +79,7 @@ export class Client extends EventEmitter {
 		try {
 			await this.http('https://groups.roblox.com/v1/groups/7/status', {
 				method: 'PATCH',
-			}, true);
+			});
 		} catch (e) {
 			if (e.message !== 'Lacking permissions') {
 				throw e;
@@ -93,6 +93,22 @@ export class Client extends EventEmitter {
 			const request = this.httpQueue[0];
 			this.httpQueue.shift();
 			this.debug && console.log(`${request[1].method || 'GET'} request to ${request[0]}`);
+			const url = request[0];
+			const config = request[1];
+			const resolve = request[2];
+			const reject = request[3];
+			if (!config.headers) {
+				config.headers = {};
+			}
+			if (this.cookie) config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+			if (this.token) {
+				config.headers['x-csrf-token'] = this.token || '';
+			} else if (config.method) {
+				const headers = (await axios(url, config).catch(err => err.response)).headers;
+				this.debug && console.log(headers);
+				this.token = headers['x-csrf-token'];
+				config.headers['x-csrf-token'] = this.token || '';
+			}
 			const response = await axios(request[0], request[1]).catch((err: AxiosError) => {
 				this.debug && console.error(`http error: ${err}`);
 				const errResponse = err.response;
@@ -101,14 +117,14 @@ export class Client extends EventEmitter {
 					switch(errResponse.status) {
 					case 401: {
 						if (this.cookie) {
-							request[3](new Error('Invalid cookie'));
+							reject(new Error('Invalid cookie'));
 						}
-						request[3](new Error('Client not logged in'));
+						reject(new Error('Client not logged in'));
 						break;
 					}
 					case 403: {
 						this.debug && console.error(errResponse.data);
-						request[3](new Error('Lacking permissions'));
+						reject(new Error('Lacking permissions'));
 						break;
 					}
 					case 429: {
@@ -119,14 +135,19 @@ export class Client extends EventEmitter {
 						break;
 					}
 					case 503: {
-						request[3](new Error('Roblox API error'));
+						reject(new Error('Roblox API error'));
 						break;
 					}
 					default: {
 						if (errResponse.data.errors[0]) {
-							request[3](errResponse.data.errors[0].message);
+							if (errResponse.data.errors[0].message === 'Token Validation Failed') {
+								this.debug && console.log(errResponse.headers);
+								return err.response;
+							} else {
+								reject(errResponse.data.errors[0].message);
+							}
 						}
-						request[3](err);
+						reject(err);
 						break;
 					}
 					}
@@ -137,7 +158,7 @@ export class Client extends EventEmitter {
 				this.token = response.headers['x-csrf-token'];
 			}
 			// If no error, resolve promise
-			request[2](response);
+			resolve(response);
 		} else {
 			this.httpIntervalId && clearInterval(this.httpIntervalId);
 			this.httpIntervalId = undefined;
@@ -150,20 +171,8 @@ export class Client extends EventEmitter {
 	 * @param {Object} config The axios config
 	 * @returns {Promise} Resolves when the request has been made, or rejects if an error occurred
 	 */
-	http(url: string, config?: Record<string, any>, ignoreXCSRF?: boolean): AxiosPromise {
+	http(url: string, config: AxiosRequestConfig): AxiosPromise {
 		return new Promise((resolve, reject): void => {
-			if (!config) {
-				config = {};
-			}
-			if (!config.headers) {
-				config.headers = {};
-			}
-			if (this.cookie) config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
-			if (this.token) {
-				config.headers['x-csrf-token'] = this.token;
-			} else if (config.method && !ignoreXCSRF) {
-				return reject(new Error('Client not logged in, didn\'t get X-CSRF-token'));
-			}
 			this.httpQueue.push([url, config, resolve, reject]);
 			if (!this.httpIntervalId) {
 				this.httpIntervalId = setInterval(() => this.handleHttpQueue(), this.httpInterval);
@@ -177,7 +186,9 @@ export class Client extends EventEmitter {
 	 * @returns {Group} The requested group
 	 */
 	async getGroup(id: number): Promise<Group> {
-		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`);
+		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`, {
+			method: 'GET',
+		});
 		const cached = this.groups.get(id);
 		if (cached) {
 			cached.update(response.data);
@@ -187,7 +198,9 @@ export class Client extends EventEmitter {
 	}
 
 	async getUser(id: number): Promise<User> {
-		const response = await this.http(`https://users.roblox.com/v1/users/${id}`);
+		const response = await this.http(`https://users.roblox.com/v1/users/${id}`, {
+			method: 'GET',
+		});
 		response.data.userId = response.data.id || response.data.userId;
 		response.data.username = response.data.name || response.data.username;
 		const cached = this.users.get(id);

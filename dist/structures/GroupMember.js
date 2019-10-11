@@ -26,13 +26,12 @@ class GroupMember extends Base_1.Base {
      * @returns {GroupMember} This member, with the updated role
      */
     async setRole(role) {
-        const config = {
+        await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
             method: 'PATCH',
             data: {
                 roleId: role.id,
             },
-        };
-        await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, config).catch((err) => {
+        }).catch((err) => {
             const errResponse = err.response;
             if (errResponse) {
                 switch (errResponse.status) {

@@ -72,7 +72,9 @@ class Group extends Base_1.Base {
         this.locked = data.isLocked;
     }
     async member(user) {
-        const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`);
+        const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
+            method: 'GET',
+        });
         const userGroups = response.data.data;
         for (const groupResponse of userGroups) {
             this.client.debug && console.log(groupResponse);
@@ -117,8 +119,9 @@ class Group extends Base_1.Base {
      * @returns {Collection}
      */
     async getRoles() {
-        const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
-        const response = await this.client.http(url);
+        const response = await this.client.http(`https://groups.roblox.com/v1/groups/${this.id}/roles`, {
+            method: 'GET',
+        });
         for (const data of response.data.roles) {
             const role = this.client.roles.get(data.id);
             role && role.update(data) || new Role_1.Role(this.client, data, this);

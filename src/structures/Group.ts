@@ -103,7 +103,9 @@ export class Group extends Base {
 	}
 
 	async member(user: User): Promise<GroupMember|null> {
-		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`);
+		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
+			method: 'GET',
+		});
 		const userGroups = response.data.data;
 		for (const groupResponse of userGroups) {
 			this.client.debug && console.log(groupResponse);
@@ -147,8 +149,9 @@ export class Group extends Base {
 	 * @returns {Collection}
 	 */
 	async getRoles(): Promise<Collection<Role>> {
-		const url = `https://groups.roblox.com/v1/groups/${this.id}/roles`;
-		const response = await this.client.http(url);
+		const response = await this.client.http(`https://groups.roblox.com/v1/groups/${this.id}/roles`, {
+			method: 'GET',
+		});
 		for (const data of response.data.roles) {
 			const role = this.client.roles.get(data.id);
 			role && role.update(data) || new Role(this.client, data, this);

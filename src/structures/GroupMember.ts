@@ -38,13 +38,12 @@ export class GroupMember extends Base {
 	 * @returns {GroupMember} This member, with the updated role
 	 */
 	async setRole(role: Role): Promise<GroupMember> {
-		const config = {
+		await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
 			method: 'PATCH',
 			data: {
 				roleId: role.id,
 			},
-		};
-		await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, config).catch((err: AxiosError) => {
+		}).catch((err: AxiosError) => {
 			const errResponse = err.response;
 			if (errResponse) {
 				switch(errResponse.status) {
