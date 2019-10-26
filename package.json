@@ -4,8 +4,8 @@
   "description": "An object-oriented library to interact with the roblox api",
   "main": "dist/Structures.js",
   "scripts": {
-    "test": "node tests/index.js",
-    "build": "tsc",
+    "test": "npm install && node tests/index.js",
+    "prepublish": "tsc",
     "docs": "jsdoc -r -d ./docs ./dist"
   },
   "repository": {
