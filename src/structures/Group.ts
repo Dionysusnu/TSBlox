@@ -30,7 +30,7 @@ interface GroupMemberResponse {
  */
 export class Group extends Base {
 	description: string;
-	owner: User; // TODO make GroupMember
+	owner: Promise<GroupMember|null>;
 	status: Shout;
 	memberCount: number;
 	isBuildersClubOnly: boolean;
@@ -56,9 +56,7 @@ export class Group extends Base {
 		/**
 		 * @property {User} owner The owner of this group
 		 */
-		const owner = client.users.get(data.owner.userId);
-		owner && owner.update(data.owner);
-		this.owner = owner || new User(client, data.owner);
+		this.owner = this.member(this.client.users.get(data.owner.userId) || new User(client, data.owner));
 		/**
 		 * @property {Shout} status The current group shout
 		 */
@@ -93,7 +91,7 @@ export class Group extends Base {
 
 	update(data: GroupData): void {
 		this.description = data.description || this.description; // For short responses
-		this.owner = this.client.users.get(data.owner.userId) || new User(this.client, data.owner) || this.owner;
+		this.owner = this.member(this.client.users.get(data.owner.userId) || new User(this.client, data.owner));
 		this.status = data.shout && new Shout(this.client, data.shout, this) || this.shout;
 		this.memberCount = data.memberCount || this.memberCount;
 		this.isBuildersClubOnly = data.isBuildersClubOnly || this.isBuildersClubOnly;
