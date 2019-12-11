@@ -23,7 +23,7 @@ export declare class Client extends EventEmitter {
     private httpIntervalId?;
     private cookie?;
     private token?;
-    readonly debug?: boolean;
+    debug?: boolean;
     constructor(cookie: string);
     login(cookie: string): Promise<void>;
     private handleHttpQueue;

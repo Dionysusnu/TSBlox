@@ -35,7 +35,7 @@ export class Client extends EventEmitter {
 	private httpIntervalId?: NodeJS.Timeout;
 	private cookie?: string;
 	private token?: string;
-	public readonly debug?: boolean;
+	public debug?: boolean;
 	/**
 	 * Returns a new client
 	 * @param {string} [cookie] The .ROBLOSECURITY cookie to use when this client makes requests to the API
@@ -175,7 +175,7 @@ export class Client extends EventEmitter {
 							break;
 						}
 						default: {
-							if (errResponse.data.errors[0]) {
+							if (errResponse.data.errors?.[0]) {
 								if (errResponse.data.errors[0].message === 'Token Validation Failed') {
 									this.debug && console.log(errResponse.headers);
 									return err.response;

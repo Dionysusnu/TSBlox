@@ -66,6 +66,7 @@ class Client extends events_1.default {
             }
             this.debug && console.log(config.headers);
             const response = await axios_1.default(request[0], request[1]).catch((err) => {
+                var _a;
                 this.debug && console.error(`http error: ${err}`);
                 const errResponse = err.response;
                 if (errResponse) {
@@ -116,7 +117,7 @@ class Client extends events_1.default {
                             break;
                         }
                         default: {
-                            if (errResponse.data.errors[0]) {
+                            if ((_a = errResponse.data.errors) === null || _a === void 0 ? void 0 : _a[0]) {
                                 if (errResponse.data.errors[0].message === 'Token Validation Failed') {
                                     this.debug && console.log(errResponse.headers);
                                     return err.response;

@@ -6,7 +6,7 @@ const {
 const client = new Client();
 
 async function doSomething() {
-	// client.debug = true;
+	client.debug = true;
 	await require('./getGroup')(client, assert);
 	await require('./getRoles')(client, assert);
 	await require('./shout')(client, assert);
