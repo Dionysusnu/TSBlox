@@ -1,39 +1,52 @@
 import EventEmitter from 'events';
-import axios, { AxiosRequestConfig, AxiosPromise, AxiosError } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { Collection } from './Collection';
 import { User } from './User';
 import { Badge } from './Badge';
 import { Role } from './Role';
 import { Group } from './Group';
 import { default as Util } from '../util/Util';
+import { Base } from './Base';
+
+interface HttpConfig extends AxiosRequestConfig {
+	method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE';
+}
 
 interface HttpRequest {
 	0: string;
 	1: AxiosRequestConfig;
 	2: Function;
 	3: Function;
+	4: CatchConfig;
 }
+
+type CatchConfig = Record<number, string | Record<number, string>>
+
 /** Client for interacting with the API */
 export class Client extends EventEmitter {
-	badges: Collection<Badge>;
-	groups: Collection<Group>;
-	roles: Collection<Role>;
-	users: Collection<User>;
-	httpQueue: HttpRequest[];
-	util: Record<string, Function>;
-	httpTimeout: number;
-	httpInterval: number;
-	httpIntervalId?: NodeJS.Timeout;
-	cookie?: string;
-	token?: string;
-	debug?: boolean;
+	public badges: Collection<Base['id'], Badge>;
+	public groups: Collection<Base['id'], Group>;
+	public roles: Collection<Base['id'], Role>;
+	public users: Collection<Base['id'], User>;
+	private httpQueue: HttpRequest[];
+	public util: Record<string, Function>;
+	private httpTimeout: number;
+	private httpInterval: number;
+	private httpIntervalId?: NodeJS.Timeout;
+	private cookie?: string;
+	private token?: string;
+	public readonly debug?: boolean;
 	/**
 	 * Returns a new client
 	 * @param {string} [cookie] The .ROBLOSECURITY cookie to use when this client makes requests to the API
 	 */
-	constructor(cookie: string) {
+	public constructor(cookie: string) {
 		super();
-		if (cookie) this.login(cookie);
+		if (cookie) {
+			this.login(cookie).catch(err => {
+				throw err;
+			});
+		}
 		/**
 		 * @property {Collection} badges A collection with all cached badges
 		 */
@@ -73,7 +86,7 @@ export class Client extends EventEmitter {
 	 * Logs in the client with the given cookie. Can be used after already setting a cookie
 	 * @param {string} cookie The cookie to login with
 	 */
-	async login(cookie: string): Promise<void> {
+	public async login(cookie: string): Promise<void> {
 		this.cookie = cookie;
 		// Consistent endpoint for cookie verification, using roblox fan group which hopefully won't be deleted
 		try {
@@ -88,19 +101,22 @@ export class Client extends EventEmitter {
 		}
 	}
 
-	async handleHttpQueue(): Promise<void> {
+	private async handleHttpQueue(): Promise<void> {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue[0];
 			this.httpQueue.shift();
-			this.debug && console.log(`${request[1].method || 'GET'} request to ${request[0]}`);
+			this.debug && console.log(`${request[1].method} request to ${request[0]}`);
 			const url = request[0];
 			const config = request[1];
 			const resolve = request[2];
 			const reject = request[3];
+			const catchConfig = request[4];
 			if (!config.headers) {
 				config.headers = {};
 			}
-			if (this.cookie) config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+			if (this.cookie) {
+				config.headers.cookie = '.ROBLOSECURITY=' + this.cookie + ';';
+			}
 			if (this.token) {
 				config.headers['x-csrf-token'] = this.token || '';
 			} else if (config.method) {
@@ -116,42 +132,60 @@ export class Client extends EventEmitter {
 				const errResponse = err.response;
 				if (errResponse) {
 					this.debug && console.error(errResponse.data);
-					switch(errResponse.status) {
-					case 401: {
-						if (this.cookie) {
-							reject(new Error('Invalid cookie'));
-						}
-						reject(new Error('Client not logged in'));
-						break;
-					}
-					case 403: {
-						this.debug && console.error(errResponse.data);
-						reject(new Error('Lacking permissions'));
-						break;
-					}
-					case 429: {
-						this.httpIntervalId && clearInterval(this.httpIntervalId);
-						setTimeout(() => {
-							this.httpIntervalId = setInterval(() => this.handleHttpQueue(), this.httpInterval);
-						}, this.httpTimeout);
-						break;
-					}
-					case 503: {
-						reject(new Error('Roblox API error'));
-						break;
-					}
-					default: {
-						if (errResponse.data.errors[0]) {
-							if (errResponse.data.errors[0].message === 'Token Validation Failed') {
-								this.debug && console.log(errResponse.headers);
-								return err.response;
-							} else {
-								reject(errResponse.data.errors[0].message);
+					for (const status in catchConfig) {
+						const parsedStatus = parseInt(status);
+						if (parsedStatus !== errResponse.status) continue;
+						const message = catchConfig[parsedStatus];
+						if (typeof message === 'string') {
+							reject(new Error(message));
+						} else {
+							for (const code in message) {
+								const parsedCode = parseInt(code);
+								if (parsedCode !== errResponse.data.errors[0].code) continue;
+								reject(new Error(message[parsedCode]));
 							}
 						}
-						reject(err);
-						break;
 					}
+					switch (errResponse.status) {
+						case 401: {
+							if (this.cookie) {
+								reject(new Error('Invalid cookie'));
+							}
+							reject(new Error('Client not logged in'));
+							break;
+						}
+						case 403: {
+							this.debug && console.error(errResponse.data);
+							reject(new Error('Lacking permissions'));
+							break;
+						}
+						case 429: {
+							this.httpIntervalId && clearInterval(this.httpIntervalId);
+							setTimeout(() => {
+								this.httpIntervalId = setInterval(() => {
+									this.handleHttpQueue().catch(err => {
+										throw err;
+									});
+								}, this.httpInterval);
+							}, this.httpTimeout);
+							break;
+						}
+						case 503: {
+							reject(new Error('Roblox API error'));
+							break;
+						}
+						default: {
+							if (errResponse.data.errors[0]) {
+								if (errResponse.data.errors[0].message === 'Token Validation Failed') {
+									this.debug && console.log(errResponse.headers);
+									return err.response;
+								} else {
+									reject(errResponse.data.errors[0].message);
+								}
+							}
+							reject(err);
+							break;
+						}
 					}
 				}
 				return err.response;
@@ -171,13 +205,18 @@ export class Client extends EventEmitter {
 	 * Internal function for making http calls to the API, taking care of cookie and X-CSRF tokens. Can be used for APIs that the library doesn't cover yet
 	 * @param {string} url The url to make an API call to
 	 * @param {Object} config The axios config
+	 * @param {Object} catchConfig The error message structure
 	 * @returns {Promise} Resolves when the request has been made, or rejects if an error occurred
 	 */
-	http(url: string, config: AxiosRequestConfig): AxiosPromise {
+	public async http(url: string, config: HttpConfig, catchConfig: CatchConfig = {}): Promise<AxiosResponse> {
 		return new Promise((resolve, reject): void => {
-			this.httpQueue.push([url, config, resolve, reject]);
+			this.httpQueue.push([url, config, resolve, reject, catchConfig]);
 			if (!this.httpIntervalId) {
-				this.httpIntervalId = setInterval(() => this.handleHttpQueue(), this.httpInterval);
+				this.httpIntervalId = setInterval(() => {
+					this.handleHttpQueue().catch(err => {
+						throw err;
+					});
+				}, this.httpInterval);
 			}
 		});
 	}
@@ -185,11 +224,15 @@ export class Client extends EventEmitter {
 	/**
 	 * Gets a group or updates its cached data
 	 * @param {integer} id The id of the group to get
-	 * @returns {Group} The requested group
+	 * @returns {Group|undefined} The requested group
 	 */
-	async getGroup(id: number): Promise<Group> {
+	public async getGroup(id: number): Promise<Group | undefined> {
 		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`, {
 			method: 'GET',
+		}, {
+			400: {
+				1: 'Group is invalid',
+			},
 		});
 		const cached = this.groups.get(id);
 		if (cached) {
@@ -199,7 +242,7 @@ export class Client extends EventEmitter {
 		return new Group(this, response.data);
 	}
 
-	async getUser(id: number): Promise<User> {
+	public async getUser(id: number): Promise<User | undefined> {
 		const response = await this.http(`https://users.roblox.com/v1/users/${id}`, {
 			method: 'GET',
 		});
@@ -213,7 +256,7 @@ export class Client extends EventEmitter {
 		return new User(this, response.data);
 	}
 
-	async getUserByName(name: string): Promise<User> {
+	public async getUserByName(name: string): Promise<User | undefined> {
 		const response = await this.http('https://users.roblox.com/v1/usernames/users', {
 			method: 'POST',
 			data: {

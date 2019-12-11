@@ -1,7 +1,7 @@
 import { Client } from './Client';
 import { Group } from './Group';
-import { User } from './User';
-import { UserData } from '../Interfaces';
+import { User, UserData } from './User';
+import { GroupMember } from './GroupMember';
 export interface ShoutData {
 	body: string;
 	poster: UserData;
@@ -12,23 +12,36 @@ export interface ShoutData {
  * To create a new shout, use Group.shout()
  */
 export class Shout {
-	constructor(client: Client, data: ShoutData, group: Group) {
-		Object.defineProperty(this, 'client', { value: client });
+	public readonly client: Client;
+	public readonly message: string;
+	public readonly author: Promise<GroupMember>;
+	public readonly time: Date;
+	public readonly group: Group;
+	public constructor(client: Client, data: ShoutData, group: Group) {
+		this.client = client;
 		/**
 		 * @property {string} message The content of this shout
 		 */
-		Object.defineProperty(this, 'message', { value: data.body });
+		this.message = data.body;
 		/**
-		 * @property {User} poster The user that shouted this message
+		 * @property {string} time The time this was shouted at
 		 */
-		Object.defineProperty(this, 'poster', { value: client.users.get(data.poster.userId) || new User(client, data.poster) });
-		/**
-		 * @property {string} timeUpdated The time this was shouted at
-		 */
-		Object.defineProperty(this, 'time', { value: new Date(data.updated) });
+		this.time = new Date(data.updated);
 		/**
 		 * @property {Group} group The group this shout belongs to
 		 */
-		Object.defineProperty(this, 'group', { value: group });
+		this.group = group;
+		/**
+		 * @property {User} author The user that shouted this message
+		 */
+		this.author = this.getAuthor(data.poster);
+	}
+
+	private async getAuthor(author: UserData): Promise<GroupMember> {
+		const member = await this.group.member(this.client.users.get(author.userId) || new User(this.client, author));
+		if (!member) {
+			throw new Error('Shout author not in group');
+		}
+		return member;
 	}
 }

@@ -12,10 +12,11 @@ export interface RoleData {
  * Represents a roleset in a group
  */
 export class Role extends Base {
-	group: Group;
-	rank: number;
-	memberCount?: number;
-	constructor(client: Client, data: RoleData, group: Group) {
+	public readonly group: Group;
+	public rank: number;
+	public memberCount?: number;
+	public constructor(client: Client, data: RoleData, group: Group) {
+		if (!(group instanceof Group)) throw new TypeError('argument 3 must be a group instance');
 		super(client, data.id);
 		/**
 		 * @property {Group} group The group this roleset belongs to
@@ -38,7 +39,7 @@ export class Role extends Base {
 		client.roles.set(this.id, this);
 	}
 
-	update(data: RoleData): void {
+	public update(data: RoleData): void {
 		this.rank = data.rank;
 		this.memberCount = data.memberCount;
 	}

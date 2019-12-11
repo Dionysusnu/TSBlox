@@ -1,32 +1,34 @@
 {
-  "name": "tsblox",
-  "version": "2.3.0",
-  "description": "An object-oriented library to interact with the roblox api",
-  "main": "dist/Structures.js",
-  "scripts": {
-    "test": "npm install && node tests/index.js",
-    "prepublish": "tsc",
-    "docs": "jsdoc -r -d ./docs ./dist"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Dionysusnu/NodeBlox.git"
-  },
-  "author": "Dionysusnu",
-  "license": "GPL-3.0-or-later",
-  "bugs": {
-    "url": "https://github.com/Dionysusnu/NodeBlox/issues"
-  },
-  "homepage": "https://github.com/Dionysusnu/NodeBlox#readme",
-  "dependencies": {
-    "axios": "^0.19.0"
-  },
-  "devDependencies": {
-    "@types/node": "^12.7.12",
-    "@typescript-eslint/eslint-plugin": "^2.3.3",
-    "@typescript-eslint/parser": "^2.3.3",
-    "eslint": "^6.5.1",
-    "jsdoc": "^3.6.3",
-    "typescript": "^3.6.4"
-  }
+	"name": "tsblox",
+	"version": "2.5.0",
+	"description": "An object-oriented library to interact with the roblox api",
+	"main": "dist/Structures.js",
+	"scripts": {
+		"test": "node tests/index.js",
+		"prepublishOnly": "pnpm run lint && pnpm run build && pnpm run test && pnpm run docs",
+		"build": "tsc",
+		"lint": "eslint --ext .ts ./src",
+		"docs": "typedoc --out docs src/Structures.ts --mode file"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Dionysusnu/TSBlox.git"
+	},
+	"author": "Dionysusnu",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Dionysusnu/TSBlox/issues"
+	},
+	"homepage": "https://github.com/Dionysusnu/TSBlox#readme",
+	"dependencies": {
+		"axios": "^0.19.0"
+	},
+	"devDependencies": {
+		"@types/node": "^12.12.16",
+		"@typescript-eslint/eslint-plugin": "^2.11.0",
+		"@typescript-eslint/parser": "^2.11.0",
+		"eslint": "^6.7.2",
+		"typedoc": "^0.15.4",
+		"typescript": "^3.7.3"
+	}
 }

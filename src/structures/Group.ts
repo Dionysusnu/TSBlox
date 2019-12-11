@@ -2,11 +2,10 @@ import { AxiosError } from 'axios';
 import { Base } from './Base';
 import { Collection } from './Collection';
 import { Client } from './Client';
-import { User } from './User';
-import { Role } from './Role';
+import { User, UserData } from './User';
+import { Role, RoleData } from './Role';
 import { GroupMember } from './GroupMember';
-import { Shout } from './Shout';
-import { ShoutData, UserData, RoleData } from '../Interfaces';
+import { Shout, ShoutData } from './Shout';
 
 interface GroupData {
 	owner: UserData;
@@ -29,26 +28,23 @@ interface GroupMemberResponse {
  * Represents a group
  */
 export class Group extends Base {
-	description: string;
-	owner: Promise<GroupMember|null>;
-	status: Shout;
-	memberCount: number;
-	isBuildersClubOnly: boolean;
-	hasClan: boolean;
-	public: boolean;
-	locked: boolean;
-	roles: Collection<Role>;
-	members: Collection<GroupMember>;
-	constructor(client: Client, data: GroupData) {
+	public name: string;
+	public description: string;
+	public owner: Promise<GroupMember>;
+	public status: Shout;
+	public memberCount: number;
+	public isBuildersClubOnly: boolean;
+	public hasClan: boolean;
+	public isPublic: boolean;
+	public isLocked: boolean;
+	public roles: Collection<Base['id'], Role>;
+	public members: Collection<Base['id'], GroupMember>;
+	public constructor(client: Client, data: GroupData) {
 		super(client, data.id);
-		/**
-		 * @property {integer} id The id of this group
-		 */
-		Object.defineProperty(this, 'id', { value: data.id });
 		/**
 		 * @property {string} name The name of this group
 		 */
-		Object.defineProperty(this, 'name', { value: data.name });
+		this.name = data.name;
 		/**
 		 * @property {string} description The description of this group
 		 */
@@ -56,7 +52,7 @@ export class Group extends Base {
 		/**
 		 * @property {User} owner The owner of this group
 		 */
-		this.owner = this.member(this.client.users.get(data.owner.userId) || new User(client, data.owner));
+		this.owner = this.getOwner(data.owner);
 		/**
 		 * @property {Shout} status The current group shout
 		 */
@@ -76,11 +72,11 @@ export class Group extends Base {
 		/**
 		 * @property {boolean} public If true, anyone can join this group. If false, users have to send a join request first
 		 */
-		this.public = data.publicEntryAllowed;
+		this.isPublic = data.publicEntryAllowed;
 		/**
 		 * @property {boolean} locked If true, the group can't be joined
 		 */
-		this.locked = data.isLocked;
+		this.isLocked = data.isLocked;
 		this.members = new Collection(this.client);
 		/**
 		 * @property {Collection} roles All known roles in this group
@@ -89,18 +85,29 @@ export class Group extends Base {
 		client.groups.set(this.id, this);
 	}
 
-	update(data: GroupData): void {
+	public update(data: GroupData): void {
 		this.description = data.description || this.description; // For short responses
-		this.owner = this.member(this.client.users.get(data.owner.userId) || new User(this.client, data.owner));
-		this.status = data.shout && new Shout(this.client, data.shout, this) || this.shout;
+		this.owner = this.getOwner(data.owner);
+		this.status = data.shout && new Shout(this.client, data.shout, this) || this.status;
 		this.memberCount = data.memberCount || this.memberCount;
 		this.isBuildersClubOnly = data.isBuildersClubOnly || this.isBuildersClubOnly;
 		this.hasClan = data.hasClan;
-		this.public = data.publicEntryAllowed;
-		this.locked = data.isLocked;
+		this.isPublic = data.publicEntryAllowed;
+		this.isLocked = data.isLocked;
 	}
 
-	async member(user: User): Promise<GroupMember|null> {
+	private async getOwner(owner: UserData): Promise<GroupMember> {
+		const member = await this.member(this.client.users.get(owner.userId) || new User(this.client, owner)).catch(err => {
+			throw err;
+		});
+		if (!member) {
+			throw new Error('Group owner not in group');
+		}
+		return member;
+	}
+
+	public async member(user: User): Promise<GroupMember | null> {
+		if (!(user instanceof User)) throw new TypeError('Argument 1 must be a user instance');
 		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
 			method: 'GET',
 		});
@@ -131,7 +138,7 @@ export class Group extends Base {
 	 * Function to retrieve all current members of the group
 	 * @returns {Collection}
 	 */
-	async getMembers(): Promise<Collection<GroupMember>> {
+	public async getMembers(): Promise<Collection<Base['id'], GroupMember>> {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
 		this.members = await this.client.util.getPages(url, GroupMember, this, (data: GroupMemberResponse) => {
 			return {
@@ -146,7 +153,7 @@ export class Group extends Base {
 	 * Function to retrieve all rolesets
 	 * @returns {Collection}
 	 */
-	async getRoles(): Promise<Collection<Role>> {
+	public async getRoles(): Promise<Collection<Base['id'], Role>> {
 		const response = await this.client.http(`https://groups.roblox.com/v1/groups/${this.id}/roles`, {
 			method: 'GET',
 		});
@@ -162,7 +169,8 @@ export class Group extends Base {
 	 * @param {string} message The content of the shout
 	 * @returns {Shout} The posted shout
 	 */
-	async shout(message: string): Promise<Shout> {
+	public async shout(message: string): Promise<Shout> {
+		if (typeof message !== 'string') throw new TypeError('Argument 1 must be a string');
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
 		const response = await this.client.http(url, {
 			method: 'PATCH',
@@ -172,21 +180,21 @@ export class Group extends Base {
 		}).catch((err: AxiosError) => {
 			const errResponse = err.response;
 			if (errResponse) {
-				switch(errResponse.status) {
-				case 400: {
-					switch(errResponse.data.errors[1].code) {
-					case 1: {
-						throw new Error('Group is invalid');
+				switch (errResponse.status) {
+					case 400: {
+						switch (errResponse.data.errors[1].code) {
+							case 1: {
+								throw new Error('Group is invalid');
+							}
+							case 6: {
+								throw new Error('Lacking permissions');
+							}
+							case 7: {
+								throw new Error('Empty shout not possible');
+							}
+						}
+						break;
 					}
-					case 6: {
-						throw new Error('Lacking permissions');
-					}
-					case 7: {
-						throw new Error('Empty shout not possible');
-					}
-					}
-					break;
-				}
 				}
 			}
 			throw err;
@@ -199,39 +207,40 @@ export class Group extends Base {
 	 * @param {string} description The new description for the group
 	 * @returns {Group} This group, with the updated description
 	 */
-	async setDescription(description: string): Promise<Group> {
+	public async setDescription(description: string): Promise<Group> {
+		if (typeof description !== 'string') throw new TypeError('argument 1 must be a string');
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/description`;
 		await this.client.http(url, {
-			method: 'patch',
+			method: 'PATCH',
 			data: {
 				description: description,
 			},
 		}).catch((err: AxiosError) => {
 			const errResponse = err.response;
 			if (errResponse) {
-				switch(errResponse.status) {
-				case 400: {
-					switch(errResponse.data.errors[1].code) {
-					case 1: {
-						throw new Error('Group is invalid');
+				switch (errResponse.status) {
+					case 400: {
+						switch (errResponse.data.errors[1].code) {
+							case 1: {
+								throw new Error('Group is invalid');
+							}
+							case 29: {
+								throw new Error('Empty description not possible');
+							}
+						}
+						break;
 					}
-					case 29: {
-						throw new Error('Empty description not possible');
+					case 403: {
+						switch (errResponse.data.errors[1].code) {
+							case 18: {
+								throw new Error('Description too long');
+							}
+							case 23: {
+								throw new Error('Lacking permissions');
+							}
+						}
+						break;
 					}
-					}
-					break;
-				}
-				case 403: {
-					switch(errResponse.data.errors[1].code) {
-					case 18: {
-						throw new Error('Description too long');
-					}
-					case 23: {
-						throw new Error('Lacking permissions');
-					}
-					}
-					break;
-				}
 				}
 			}
 			throw err;

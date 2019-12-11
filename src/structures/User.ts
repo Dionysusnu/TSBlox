@@ -4,7 +4,7 @@ import { Badge } from './Badge';
 import { Collection } from './Collection';
 import { Client } from './Client';
 
-export type BCMembershipType = 'None'|'BC'|'TBC'|'OBC'|'RobloxPremium';
+export type BCMembershipType = 'None' | 'BC' | 'TBC' | 'OBC' | 'RobloxPremium';
 export interface UserData {
 	username: string;
 	buildersClubMembershipType: BCMembershipType;
@@ -15,10 +15,10 @@ export interface UserData {
  * Represents a user on roblox
  */
 export class User extends Base {
-	username: string;
-	membership: BCMembershipType;
-	badges: Collection<Badge>;
-	constructor(client: Client, data: UserData) {
+	public username: string;
+	public membership: BCMembershipType;
+	public badges: Collection<Base['id'], Badge>;
+	public constructor(client: Client, data: UserData) {
 		super(client, data.userId);
 		/**
 		 * @property {string} username The username of this user
@@ -35,25 +35,25 @@ export class User extends Base {
 		client.users.set(this.id, this);
 	}
 
-	update(data: UserData): void {
+	public update(data: UserData): void {
 		this.username = data.username;
 		this.membership = data.buildersClubMembershipType;
 	}
 
-	async getBadges(): Promise<Collection<Badge>> {
+	public async getBadges(): Promise<Collection<Base['id'], Badge>> {
 		this.badges = await this.client.util.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge, this).catch((err: AxiosError | Error) => {
 			if ('response' in err) {
-				switch(err.response && err.response.status) {
-				case 404: {
-					if (err.response) {
-						switch(err.response.data.errors[1].code) {
-						case 4: {
-							throw new Error('User is invalid');
+				switch (err.response && err.response.status) {
+					case 404: {
+						if (err.response) {
+							switch (err.response.data.errors[1].code) {
+								case 4: {
+									throw new Error('User is invalid');
+								}
+							}
 						}
-						}
+						break;
 					}
-					break;
-				}
 				}
 			}
 			throw err;

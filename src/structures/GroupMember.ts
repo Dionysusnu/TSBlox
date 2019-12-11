@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { Base } from './Base';
 import { Client } from './Client';
 import { User } from './User';
@@ -13,10 +12,10 @@ interface GroupMemberData {
  * Represents a user in a group
  */
 export class GroupMember extends Base {
-	readonly user: User;
-	readonly group: Group;
-	role: Role;
-	constructor(client: Client, data: GroupMemberData, group: Group) {
+	public readonly user: User;
+	public readonly group: Group;
+	public role: Role;
+	public constructor(client: Client, data: GroupMemberData, group: Group) {
 		super(client, data.user.id);
 		/**
 		 * @property {User} user The user
@@ -37,41 +36,21 @@ export class GroupMember extends Base {
 	 * @param {Role} role The new role for this user
 	 * @returns {GroupMember} This member, with the updated role
 	 */
-	async setRole(role: Role): Promise<GroupMember> {
+	public async setRole(role: Role): Promise<GroupMember> {
 		await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
 			method: 'PATCH',
 			data: {
 				roleId: role.id,
 			},
-		}).catch((err: AxiosError) => {
-			const errResponse = err.response;
-			if (errResponse) {
-				switch(errResponse.status) {
-				case 400: {
-					switch(errResponse.data.errors[1].code) {
-					case 1: {
-						throw new Error('Group is invalid');
-					}
-					case 2: {
-						throw new Error('Role is invalid');
-					}
-					case 3: {
-						throw new Error('User is invalid');
-					}
-					}
-					break;
-				}
-				case 403: {
-					switch(errResponse.data.errors[1].code) {
-					case 4: {
-						throw new Error('Lacking permissions');
-					}
-					}
-					break;
-				}
-				}
-			}
-			throw err;
+		}, {
+			400: {
+				1: 'Group is invalid',
+				2: 'Role is invalid',
+				3: 'User is invalid',
+			},
+			403: {
+				4: 'Lacking permissions',
+			},
 		});
 		this.role = role;
 		return this;

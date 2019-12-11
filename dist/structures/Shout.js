@@ -1,39 +1,20 @@
-(function (factory) {
-    if (typeof module === "object" && typeof module.exports === "object") {
-        var v = factory(require, exports);
-        if (v !== undefined) module.exports = v;
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const User_1 = require("./User");
+class Shout {
+    constructor(client, data, group) {
+        this.client = client;
+        this.message = data.body;
+        this.time = new Date(data.updated);
+        this.group = group;
+        this.author = this.getAuthor(data.poster);
     }
-    else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./User"], factory);
-    }
-})(function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    const User_1 = require("./User");
-    /**
-     * Represents a group shout.
-     * To create a new shout, use Group.shout()
-     */
-    class Shout {
-        constructor(client, data, group) {
-            Object.defineProperty(this, 'client', { value: client });
-            /**
-             * @property {string} message The content of this shout
-             */
-            Object.defineProperty(this, 'message', { value: data.body });
-            /**
-             * @property {User} poster The user that shouted this message
-             */
-            Object.defineProperty(this, 'poster', { value: client.users.get(data.poster.userId) || new User_1.User(client, data.poster) });
-            /**
-             * @property {string} timeUpdated The time this was shouted at
-             */
-            Object.defineProperty(this, 'time', { value: new Date(data.updated) });
-            /**
-             * @property {Group} group The group this shout belongs to
-             */
-            Object.defineProperty(this, 'group', { value: group });
+    async getAuthor(author) {
+        const member = await this.group.member(this.client.users.get(author.userId) || new User_1.User(this.client, author));
+        if (!member) {
+            throw new Error('Shout author not in group');
         }
+        return member;
     }
-    exports.Shout = Shout;
-});
+}
+exports.Shout = Shout;

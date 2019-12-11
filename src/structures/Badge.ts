@@ -28,26 +28,26 @@ interface BadgeData {
  * Represents a badge on roblox
  */
 export class Badge extends Base {
-	name: string;
-	description: string;
-	displayName: string;
-	displayDescription: string;
-	achievable: boolean;
-	iconImage: null;
-	awarder: null;
-	statistics: BadgeStatistics;
-	created: Date;
-	lastUpdated: Date;
-	owners: Collection<User>;
-	constructor(client: Client, data: BadgeData) {
+	public name: string;
+	public description: string;
+	public displayName: string;
+	public displayDescription: string;
+	public achievable: boolean;
+	// private iconImage: null;
+	// private awarder: null;
+	public statistics: BadgeStatistics;
+	public created: Date;
+	public lastUpdated: Date;
+	public owners: Collection<Base['id'], User>;
+	public constructor(client: Client, data: BadgeData) {
 		super(client, data.id);
 		this.name = data.name;
 		this.description = data.description;
 		this.displayName = data.displayName;
 		this.displayDescription = data.displayDescription;
 		this.achievable = data.enabled;
-		this.iconImage = null; // TO-DO: make asset and assign to ImageAsset object
-		this.awarder = null; // TO-DO: make place and assign to Place object
+		// this.iconImage = null; // TO-DO: make asset and assign to ImageAsset object
+		// this.awarder = null; // TO-DO: make place and assign to Place object
 		this.statistics = {
 			pastDayAwarded: data.statistics.pastDayAwardedCount,
 			totalAwarded: data.statistics.awardedCount,
@@ -59,13 +59,13 @@ export class Badge extends Base {
 		client.badges.set(this.id, this);
 	}
 
-	update(data: BadgeData): void {
+	public update(data: BadgeData): void {
 		this.name = data.name;
 		this.description = data.description;
 		this.displayName = data.displayName;
 		this.displayDescription = data.displayDescription;
 		this.achievable = data.enabled;
-		this.iconImage = null; // TO-DO: make asset and assign to ImageAsset object
+		// this.iconImage = null; // TO-DO: make asset and assign to ImageAsset object
 		this.statistics = {
 			pastDayAwarded: data.statistics.pastDayAwardedCount,
 			totalAwarded: data.statistics.awardedCount,
