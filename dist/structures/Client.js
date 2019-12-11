@@ -160,8 +160,9 @@ class Client extends events_1.default {
             method: 'GET',
         }, {
             400: {
-                1: 'Group is invalid',
+                1: 'Group ID is invalid',
             },
+            404: 'Group ID is invalid',
         });
         const cached = this.groups.get(id);
         if (cached) {
