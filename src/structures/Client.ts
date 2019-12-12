@@ -5,7 +5,7 @@ import { User } from './User';
 import { Badge } from './Badge';
 import { Role } from './Role';
 import { Group } from './Group';
-import { ItemNotFound, MissingPermissions } from '../util/Errors';
+import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
 import { Base } from './Base';
 
 interface HttpConfig extends AxiosRequestConfig {
@@ -101,7 +101,7 @@ export class Client extends EventEmitter {
 		try {
 			await group.shout('this will fail');
 		} catch (e) {
-			if (!(e instanceof MissingPermissions)) {
+			if (!(e instanceof MissingPermissionsError)) {
 				this.debug && console.error(e);
 				throw e;
 			}
@@ -249,11 +249,11 @@ export class Client extends EventEmitter {
 		}, {
 			400: {
 				1: (errResponse): Error => {
-					return new ItemNotFound('Group ID is invalid', errResponse, Group);
+					return new ItemNotFoundError('Group ID is invalid', errResponse, Group);
 				},
 			},
 			404: (errResponse): Error => {
-				return new ItemNotFound('Group ID is invalid', errResponse, Group);
+				return new ItemNotFoundError('Group ID is invalid', errResponse, Group);
 			},
 		});
 		const cached = this.groups.get(id);
@@ -264,13 +264,13 @@ export class Client extends EventEmitter {
 		return new Group(this, response.data);
 	}
 
-	public async getUser(id: number): Promise<User | undefined> {
+	public async getUser(id: number): Promise<User> {
 		const response = await this.http(`https://users.roblox.com/v1/users/${id}`, {
 			method: 'GET',
 		}, {
 			404: {
 				3: (errResponse): Error => {
-					return new ItemNotFound('User ID is invalid', errResponse, User);
+					return new ItemNotFoundError('User ID is invalid', errResponse, User);
 				},
 			},
 		});
@@ -284,7 +284,7 @@ export class Client extends EventEmitter {
 		return new User(this, response.data);
 	}
 
-	public async getUserByName(name: string): Promise<User | undefined> {
+	public async getUserByName(name: string): Promise<User> {
 		const response = await this.http('https://users.roblox.com/v1/usernames/users', {
 			method: 'POST',
 			data: {

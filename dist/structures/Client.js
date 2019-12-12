@@ -30,7 +30,7 @@ class Client extends events_1.default {
             await group.shout('this will fail');
         }
         catch (e) {
-            if (!(e instanceof Errors_1.MissingPermissions)) {
+            if (!(e instanceof Errors_1.MissingPermissionsError)) {
                 this.debug && console.error(e);
                 throw e;
             }
@@ -169,11 +169,11 @@ class Client extends events_1.default {
         }, {
             400: {
                 1: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group ID is invalid', errResponse, Group_1.Group);
+                    return new Errors_1.ItemNotFoundError('Group ID is invalid', errResponse, Group_1.Group);
                 },
             },
             404: (errResponse) => {
-                return new Errors_1.ItemNotFound('Group ID is invalid', errResponse, Group_1.Group);
+                return new Errors_1.ItemNotFoundError('Group ID is invalid', errResponse, Group_1.Group);
             },
         });
         const cached = this.groups.get(id);
@@ -189,7 +189,7 @@ class Client extends events_1.default {
         }, {
             404: {
                 3: (errResponse) => {
-                    return new Errors_1.ItemNotFound('User ID is invalid', errResponse, User_1.User);
+                    return new Errors_1.ItemNotFoundError('User ID is invalid', errResponse, User_1.User);
                 },
             },
         });

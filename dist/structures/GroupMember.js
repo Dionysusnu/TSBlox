@@ -20,18 +20,18 @@ class GroupMember extends Base_1.Base {
         }, {
             400: {
                 1: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group_1.Group);
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group_1.Group);
                 },
                 2: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Role is invalid', errResponse, Role_1.Role);
+                    return new Errors_1.ItemNotFoundError('Role is invalid', errResponse, Role_1.Role);
                 },
                 3: (errResponse) => {
-                    return new Errors_1.ItemNotFound('GroupMember is invalid', errResponse, GroupMember);
+                    return new Errors_1.ItemNotFoundError('GroupMember is invalid', errResponse, GroupMember);
                 },
             },
             403: {
                 4: (errResponse) => {
-                    return new Errors_1.MissingPermissions('MANAGE_ROLES', errResponse, this.group);
+                    return new Errors_1.MissingPermissionsError('MANAGE_ROLES', errResponse, this.group);
                 },
             },
         });

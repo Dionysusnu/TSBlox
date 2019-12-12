@@ -21,7 +21,7 @@ class User extends Base_1.Base {
         this.badges = await Util_1.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge_1.Badge, this, {
             404: {
                 4: (errResponse) => {
-                    return new Errors_1.ItemNotFound('User is invalid', errResponse, User);
+                    return new Errors_1.ItemNotFoundError('User is invalid', errResponse, User);
                 },
             },
         }).catch((err) => {

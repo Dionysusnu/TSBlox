@@ -51,7 +51,7 @@ class Group extends Base_1.Base {
         }, {
             400: {
                 3: (errResponse) => {
-                    return new Errors_1.ItemNotFound('User is invalid', errResponse, User_1.User);
+                    return new Errors_1.ItemNotFoundError('User is invalid', errResponse, User_1.User);
                 },
             },
         });
@@ -78,14 +78,14 @@ class Group extends Base_1.Base {
                 }
             }
         }
-        return null;
+        throw new Errors_1.ItemNotFoundError('User not in group', response, GroupMember_1.GroupMember);
     }
     async getMembers() {
         const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
         this.members = await Util_1.getPages(url, GroupMember_1.GroupMember, this, {
             400: {
                 1: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group);
                 },
             },
         }, (data) => {
@@ -102,7 +102,7 @@ class Group extends Base_1.Base {
         }, {
             400: {
                 3: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group);
                 },
             },
         });
@@ -124,10 +124,10 @@ class Group extends Base_1.Base {
         }, {
             400: {
                 1: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group);
                 },
                 6: (errResponse) => {
-                    return new Errors_1.MissingPermissions('MANAGE_STATUS', errResponse, this);
+                    return new Errors_1.MissingPermissionsError('MANAGE_STATUS', errResponse, this);
                 },
                 7: new Error('Empty shout not possible'),
             },
@@ -149,14 +149,14 @@ class Group extends Base_1.Base {
         }, {
             400: {
                 1: (errResponse) => {
-                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group);
                 },
                 29: new Error('Empty description not possible'),
             },
             403: {
                 18: new Error('Description too long'),
                 23: (errResponse) => {
-                    return new Errors_1.MissingPermissions('MANAGE_GROUP', errResponse, this);
+                    return new Errors_1.MissingPermissionsError('MANAGE_GROUP', errResponse, this);
                 },
             },
         });

@@ -32,7 +32,7 @@ export declare class Group extends Base {
     constructor(client: Client, data: GroupData);
     update(data: GroupData): void;
     private getOwner;
-    member(user: User): Promise<GroupMember | null>;
+    member(user: User): Promise<GroupMember>;
     getMembers(): Promise<Collection<Base['id'], GroupMember>>;
     getRoles(): Promise<Collection<Base['id'], Role>>;
     shout(message: string): Promise<Shout>;

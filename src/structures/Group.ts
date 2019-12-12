@@ -6,7 +6,7 @@ import { Role, RoleData } from './Role';
 import { GroupMember } from './GroupMember';
 import { Shout, ShoutData } from './Shout';
 import { getPages } from '../util/Util';
-import { ItemNotFound, MissingPermissions } from '../util/Errors';
+import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
 
 interface GroupData {
 	owner: UserData;
@@ -107,14 +107,14 @@ export class Group extends Base {
 		return member;
 	}
 
-	public async member(user: User): Promise<GroupMember | null> {
+	public async member(user: User): Promise<GroupMember> {
 		if (!(user instanceof User)) throw new TypeError('Argument 1 must be a user instance');
 		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
 			method: 'GET',
 		}, {
 			400: {
 				3: (errResponse): Error => {
-					return new ItemNotFound('User is invalid', errResponse, User);
+					return new ItemNotFoundError('User is invalid', errResponse, User);
 				},
 			},
 		});
@@ -139,7 +139,7 @@ export class Group extends Base {
 				}
 			}
 		}
-		return null;
+		throw new ItemNotFoundError('User not in group', response, GroupMember);
 	}
 	/**
 	 * Function to retrieve all current members of the group.
@@ -151,7 +151,7 @@ export class Group extends Base {
 		this.members = await getPages(url, GroupMember, this, {
 			400: {
 				1: (errResponse): Error => {
-					return new ItemNotFound('Group is invalid', errResponse, Group);
+					return new ItemNotFoundError('Group is invalid', errResponse, Group);
 				},
 			},
 		}, (data: GroupMemberResponse) => {
@@ -174,7 +174,7 @@ export class Group extends Base {
 		}, {
 			400: {
 				3: (errResponse): Error => {
-					return new ItemNotFound('Group is invalid', errResponse, Group);
+					return new ItemNotFoundError('Group is invalid', errResponse, Group);
 				},
 			},
 		});
@@ -202,10 +202,10 @@ export class Group extends Base {
 		}, {
 			400: {
 				1: (errResponse): Error => {
-					return new ItemNotFound('Group is invalid', errResponse, Group);
+					return new ItemNotFoundError('Group is invalid', errResponse, Group);
 				},
 				6: (errResponse): Error => {
-					return new MissingPermissions('MANAGE_STATUS', errResponse, this);
+					return new MissingPermissionsError('MANAGE_STATUS', errResponse, this);
 				},
 				7: new Error('Empty shout not possible'),
 			},
@@ -233,14 +233,14 @@ export class Group extends Base {
 		}, {
 			400: {
 				1: (errResponse): Error => {
-					return new ItemNotFound('Group is invalid', errResponse, Group);
+					return new ItemNotFoundError('Group is invalid', errResponse, Group);
 				},
 				29: new Error('Empty description not possible'),
 			},
 			403: {
 				18: new Error('Description too long'),
 				23: (errResponse): Error => {
-					return new MissingPermissions('MANAGE_GROUP', errResponse, this);
+					return new MissingPermissionsError('MANAGE_GROUP', errResponse, this);
 				},
 			},
 		});

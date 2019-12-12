@@ -31,7 +31,7 @@ export declare class Client extends EventEmitter {
     private handleHttpQueue;
     http(url: string, config: HttpConfig, catchConfig: CatchConfig): Promise<AxiosResponse>;
     getGroup(id: number): Promise<Group>;
-    getUser(id: number): Promise<User | undefined>;
-    getUserByName(name: string): Promise<User | undefined>;
+    getUser(id: number): Promise<User>;
+    getUserByName(name: string): Promise<User>;
 }
 export {};

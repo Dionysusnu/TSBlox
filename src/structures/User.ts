@@ -4,7 +4,7 @@ import { Badge } from './Badge';
 import { Collection } from './Collection';
 import { Client } from './Client';
 import { getPages } from '../util/Util';
-import { ItemNotFound } from '../util/Errors';
+import { ItemNotFoundError } from '../util/Errors';
 
 export type BCMembershipType = 'None' | 'BC' | 'TBC' | 'OBC' | 'RobloxPremium';
 export interface UserData {
@@ -46,7 +46,7 @@ export class User extends Base {
 		this.badges = await getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge, this, {
 			404: {
 				4: (errResponse): Error => {
-					return new ItemNotFound('User is invalid', errResponse, User);
+					return new ItemNotFoundError('User is invalid', errResponse, User);
 				},
 			},
 		}).catch((err: AxiosError | Error) => {
