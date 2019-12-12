@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
 var Badge_1 = require("./structures/Badge");
 exports.Badge = Badge_1.Badge;
 var Base_1 = require("./structures/Base");
@@ -18,5 +19,7 @@ var Shout_1 = require("./structures/Shout");
 exports.Shout = Shout_1.Shout;
 var User_1 = require("./structures/User");
 exports.User = User_1.User;
-var Util_1 = require("./util/Util");
-exports.Util = Util_1.default;
+const Util = tslib_1.__importStar(require("./util/Util"));
+exports.Util = Util;
+const Errors = tslib_1.__importStar(require("./util/Errors"));
+exports.Errors = Errors;

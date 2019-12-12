@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Base_1 = require("./Base");
+const Group_1 = require("./Group");
+const Role_1 = require("./Role");
+const Errors_1 = require("../util/Errors");
 class GroupMember extends Base_1.Base {
     constructor(client, data, group) {
         super(client, data.user.id);
@@ -16,12 +19,20 @@ class GroupMember extends Base_1.Base {
             },
         }, {
             400: {
-                1: 'Group is invalid',
-                2: 'Role is invalid',
-                3: 'User is invalid',
+                1: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group_1.Group);
+                },
+                2: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Role is invalid', errResponse, Role_1.Role);
+                },
+                3: (errResponse) => {
+                    return new Errors_1.ItemNotFound('GroupMember is invalid', errResponse, GroupMember);
+                },
             },
             403: {
-                4: 'Lacking permissions',
+                4: (errResponse) => {
+                    return new Errors_1.MissingPermissions('MANAGE_ROLES', errResponse, this.group);
+                },
             },
         });
         this.role = role;

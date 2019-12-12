@@ -76,6 +76,8 @@
 								<li class="tsd-kind-class tsd-has-type-parameter tsd-is-external"><a href="classes/collection.html" class="tsd-kind-icon">Collection</a></li>
 								<li class="tsd-kind-class tsd-is-external"><a href="classes/group.html" class="tsd-kind-icon">Group</a></li>
 								<li class="tsd-kind-class tsd-is-external"><a href="classes/groupmember.html" class="tsd-kind-icon">Group<wbr>Member</a></li>
+								<li class="tsd-kind-class tsd-has-type-parameter tsd-is-external"><a href="classes/itemnotfound.html" class="tsd-kind-icon">Item<wbr>Not<wbr>Found</a></li>
+								<li class="tsd-kind-class tsd-is-external"><a href="classes/missingpermissions.html" class="tsd-kind-icon">Missing<wbr>Permissions</a></li>
 								<li class="tsd-kind-class tsd-is-external"><a href="classes/role.html" class="tsd-kind-icon">Role</a></li>
 								<li class="tsd-kind-class tsd-is-external"><a href="classes/shout.html" class="tsd-kind-icon">Shout</a></li>
 								<li class="tsd-kind-class tsd-is-external"><a href="classes/user.html" class="tsd-kind-icon">User</a></li>
@@ -101,7 +103,16 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-is-external"><a href="globals.html#bcmembershiptype" class="tsd-kind-icon">BCMembership<wbr>Type</a></li>
-								<li class="tsd-kind-type-alias tsd-is-external tsd-is-not-exported"><a href="globals.html#catchconfig" class="tsd-kind-icon">Catch<wbr>Config</a></li>
+								<li class="tsd-kind-type-alias tsd-is-external"><a href="globals.html#catchconfig" class="tsd-kind-icon">Catch<wbr>Config</a></li>
+								<li class="tsd-kind-type-alias tsd-is-external tsd-is-not-exported"><a href="globals.html#catchfunction" class="tsd-kind-icon">Catch<wbr>Function</a></li>
+								<li class="tsd-kind-type-alias tsd-is-external tsd-is-not-exported"><a href="globals.html#catchobject" class="tsd-kind-icon">Catch<wbr>Object</a></li>
+								<li class="tsd-kind-type-alias tsd-has-type-parameter tsd-is-external"><a href="globals.html#constructor" class="tsd-kind-icon">Constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-external">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-has-type-parameter tsd-is-external"><a href="globals.html#getpages" class="tsd-kind-icon">get<wbr>Pages</a></li>
 							</ul>
 						</section>
 					</div>
@@ -115,19 +126,163 @@
 					<div class="tsd-signature tsd-kind-icon">BCMembership<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"None"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"BC"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"TBC"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"OBC"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"RobloxPremium"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/f2f0504/src/structures/User.ts#L7">src/structures/User.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/structures/User.ts#L9">src/structures/User.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-is-external">
 					<a name="catchconfig" class="tsd-anchor"></a>
 					<h3>Catch<wbr>Config</h3>
-					<div class="tsd-signature tsd-kind-icon">Catch<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">Catch<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="globals.html#catchobject" class="tsd-signature-type">CatchObject</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><a href="globals.html#catchobject" class="tsd-signature-type">CatchObject</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/f2f0504/src/structures/Client.ts#L23">src/structures/Client.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/structures/Client.ts#L34">src/structures/Client.ts:34</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>typedef</dt>
+							<dd><p>CatchConfig</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+					<a name="catchfunction" class="tsd-anchor"></a>
+					<h3>Catch<wbr>Function</h3>
+					<div class="tsd-signature tsd-kind-icon">Catch<wbr>Function<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/structures/Client.ts#L26">src/structures/Client.ts:26</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>typedef</dt>
+							<dd><p>CatchFunction</p>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>response<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AxiosResponse</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Error</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>response: <span class="tsd-signature-type">AxiosResponse</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Error</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+					<a name="catchobject" class="tsd-anchor"></a>
+					<h3>Catch<wbr>Object</h3>
+					<div class="tsd-signature tsd-kind-icon">Catch<wbr>Object<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Error</span><span class="tsd-signature-symbol"> | </span><a href="globals.html#catchfunction" class="tsd-signature-type">CatchFunction</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/structures/Client.ts#L30">src/structures/Client.ts:30</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<dl class="tsd-comment-tags">
+							<dt>typedef</dt>
+							<dd><p>CatchObject</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>Constructor</h3>
+					<div class="tsd-signature tsd-kind-icon">Constructor&lt;T&gt;<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/util/Util.ts#L2">src/util/Util.ts:2</a></li>
+						</ul>
+					</aside>
+					<h4 class="tsd-type-parameters-title">Type parameters</h4>
+					<ul class="tsd-type-parameters">
+						<li>
+							<h4>T</h4>
+						</li>
+					</ul>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+						</ul>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-external">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-has-type-parameter tsd-is-external">
+					<a name="getpages" class="tsd-anchor"></a>
+					<h3>get<wbr>Pages</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-has-type-parameter tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Pages&lt;ClassToConstruct&gt;<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, objectType<span class="tsd-signature-symbol">: </span><a href="globals.html#constructor" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ClassToConstruct</span><span class="tsd-signature-symbol">&gt;</span>, constructorParent<span class="tsd-signature-symbol">: </span><a href="classes/base.html" class="tsd-signature-type">Base</a>, catchConfig<span class="tsd-signature-symbol">: </span><a href="globals.html#catchconfig" class="tsd-signature-type">CatchConfig</a>, transformer<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="classes/collection.html" class="tsd-signature-type">Collection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassToConstruct</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Dionysusnu/TSBlox/blob/797b606/src/util/getPages.ts#L16">src/util/getPages.ts:16</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets data from a pages API and fills a Collection with it.</p>
+								</div>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>ClassToConstruct<span class="tsd-signature-symbol">: </span><a href="classes/base.html" class="tsd-signature-type">Base</a></h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>url: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The url to fetch pages from.</p>
+									</div>
+								</li>
+								<li>
+									<h5>objectType: <a href="globals.html#constructor" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ClassToConstruct</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The class to construct instances of.</p>
+									</div>
+								</li>
+								<li>
+									<h5>constructorParent: <a href="classes/base.html" class="tsd-signature-type">Base</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A base instance to use as the third argument to the constructing class.</p>
+									</div>
+								</li>
+								<li>
+									<h5>catchConfig: <a href="globals.html#catchconfig" class="tsd-signature-type">CatchConfig</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The CatchConfig to transmit to client.http().</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> transformer: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="classes/collection.html" class="tsd-signature-type">Collection</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">ClassToConstruct</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -158,6 +313,12 @@
 					</li>
 					<li class=" tsd-kind-class tsd-is-external">
 						<a href="classes/groupmember.html" class="tsd-kind-icon">Group<wbr>Member</a>
+					</li>
+					<li class=" tsd-kind-class tsd-has-type-parameter tsd-is-external">
+						<a href="classes/itemnotfound.html" class="tsd-kind-icon">Item<wbr>Not<wbr>Found</a>
+					</li>
+					<li class=" tsd-kind-class tsd-is-external">
+						<a href="classes/missingpermissions.html" class="tsd-kind-icon">Missing<wbr>Permissions</a>
 					</li>
 					<li class=" tsd-kind-class tsd-is-external">
 						<a href="classes/role.html" class="tsd-kind-icon">Role</a>
@@ -204,8 +365,20 @@
 					<li class=" tsd-kind-type-alias tsd-is-external">
 						<a href="globals.html#bcmembershiptype" class="tsd-kind-icon">BCMembership<wbr>Type</a>
 					</li>
-					<li class=" tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+					<li class=" tsd-kind-type-alias tsd-is-external">
 						<a href="globals.html#catchconfig" class="tsd-kind-icon">Catch<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+						<a href="globals.html#catchfunction" class="tsd-kind-icon">Catch<wbr>Function</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-is-external tsd-is-not-exported">
+						<a href="globals.html#catchobject" class="tsd-kind-icon">Catch<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-has-type-parameter tsd-is-external">
+						<a href="globals.html#constructor" class="tsd-kind-icon">Constructor</a>
+					</li>
+					<li class=" tsd-kind-function tsd-has-type-parameter tsd-is-external">
+						<a href="globals.html#getpages" class="tsd-kind-icon">get<wbr>Pages</a>
 					</li>
 				</ul>
 			</nav>

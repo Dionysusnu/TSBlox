@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Base_1 = require("./Base");
 const Badge_1 = require("./Badge");
 const Collection_1 = require("./Collection");
+const Util_1 = require("../util/Util");
+const Errors_1 = require("../util/Errors");
 class User extends Base_1.Base {
     constructor(client, data) {
         super(client, data.userId);
@@ -16,7 +18,13 @@ class User extends Base_1.Base {
         this.membership = data.buildersClubMembershipType;
     }
     async getBadges() {
-        this.badges = await this.client.util.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge_1.Badge, this).catch((err) => {
+        this.badges = await Util_1.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge_1.Badge, this, {
+            404: {
+                4: (errResponse) => {
+                    return new Errors_1.ItemNotFound('User is invalid', errResponse, User);
+                },
+            },
+        }).catch((err) => {
             if ('response' in err) {
                 switch (err.response && err.response.status) {
                     case 404: {

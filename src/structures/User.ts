@@ -3,6 +3,8 @@ import { Base } from './Base';
 import { Badge } from './Badge';
 import { Collection } from './Collection';
 import { Client } from './Client';
+import { getPages } from '../util/Util';
+import { ItemNotFound } from '../util/Errors';
 
 export type BCMembershipType = 'None' | 'BC' | 'TBC' | 'OBC' | 'RobloxPremium';
 export interface UserData {
@@ -41,7 +43,13 @@ export class User extends Base {
 	}
 
 	public async getBadges(): Promise<Collection<Base['id'], Badge>> {
-		this.badges = await this.client.util.getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge, this).catch((err: AxiosError | Error) => {
+		this.badges = await getPages(`https://badges.roblox.com/v1/users/${this.id}/badges`, Badge, this, {
+			404: {
+				4: (errResponse): Error => {
+					return new ItemNotFound('User is invalid', errResponse, User);
+				},
+			},
+		}).catch((err: AxiosError | Error) => {
 			if ('response' in err) {
 				switch (err.response && err.response.status) {
 					case 404: {

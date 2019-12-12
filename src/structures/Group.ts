@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { Base } from './Base';
 import { Collection } from './Collection';
 import { Client } from './Client';
@@ -6,6 +5,8 @@ import { User, UserData } from './User';
 import { Role, RoleData } from './Role';
 import { GroupMember } from './GroupMember';
 import { Shout, ShoutData } from './Shout';
+import { getPages } from '../util/Util';
+import { ItemNotFound, MissingPermissions } from '../util/Errors';
 
 interface GroupData {
 	owner: UserData;
@@ -25,7 +26,7 @@ interface GroupMemberResponse {
 	user: UserData;
 }
 /**
- * Represents a group
+ * Represents a group.
  */
 export class Group extends Base {
 	public name: string;
@@ -42,44 +43,44 @@ export class Group extends Base {
 	public constructor(client: Client, data: GroupData) {
 		super(client, data.id);
 		/**
-		 * @property {string} name The name of this group
+		 * @property {string} name The name of this group.
 		 */
 		this.name = data.name;
 		/**
-		 * @property {string} description The description of this group
+		 * @property {string} description The description of this group.
 		 */
 		this.description = data.description;
 		/**
-		 * @property {User} owner The owner of this group
+		 * @property {User} owner The owner of this group.
 		 */
 		this.owner = this.getOwner(data.owner);
 		/**
-		 * @property {Shout} status The current group shout
+		 * @property {Shout} status The current group shout.
 		 */
 		this.status = data.shout && new Shout(client, data.shout, this);
 		/**
-		 * @property {integer} memberCount The current amount of members in this group
+		 * @property {number} memberCount The current amount of members in this group.
 		 */
 		this.memberCount = data.memberCount;
 		/**
-		 * @property {boolean} isBuildersClubOnly If true, only users with builders club or roblox premium can join this group
+		 * @property {boolean} isBuildersClubOnly If true, only users with builders club or roblox premium can join this group.
 		 */
 		this.isBuildersClubOnly = data.isBuildersClubOnly;
 		/**
-		 * @property {boolean} hasClan Determines whether this group has a clan
+		 * @property {boolean} hasClan Determines whether this group has a clan.
 		 */
 		this.hasClan = data.hasClan;
 		/**
-		 * @property {boolean} public If true, anyone can join this group. If false, users have to send a join request first
+		 * @property {boolean} public If true, anyone can join this group. If false, users have to send a join request first.
 		 */
 		this.isPublic = data.publicEntryAllowed;
 		/**
-		 * @property {boolean} locked If true, the group can't be joined
+		 * @property {boolean} locked If true, the group can't be joined.
 		 */
 		this.isLocked = data.isLocked;
 		this.members = new Collection(this.client);
 		/**
-		 * @property {Collection} roles All known roles in this group
+		 * @property {Collection} roles All cached roles in this group.
 		 */
 		this.roles = new Collection(this.client);
 		client.groups.set(this.id, this);
@@ -110,6 +111,12 @@ export class Group extends Base {
 		if (!(user instanceof User)) throw new TypeError('Argument 1 must be a user instance');
 		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
 			method: 'GET',
+		}, {
+			400: {
+				3: (errResponse): Error => {
+					return new ItemNotFound('User is invalid', errResponse, User);
+				},
+			},
 		});
 		const userGroups = response.data.data;
 		for (const groupResponse of userGroups) {
@@ -135,12 +142,19 @@ export class Group extends Base {
 		return null;
 	}
 	/**
-	 * Function to retrieve all current members of the group
-	 * @returns {Collection}
+	 * Function to retrieve all current members of the group.
+	 *
+	 * @returns {Collection} The members of the group.
 	 */
 	public async getMembers(): Promise<Collection<Base['id'], GroupMember>> {
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
-		this.members = await this.client.util.getPages(url, GroupMember, this, (data: GroupMemberResponse) => {
+		this.members = await getPages(url, GroupMember, this, {
+			400: {
+				1: (errResponse): Error => {
+					return new ItemNotFound('Group is invalid', errResponse, Group);
+				},
+			},
+		}, (data: GroupMemberResponse) => {
 			return {
 				user: this.client.users.get(data.user.userId) || new User(this.client, data.user),
 				role: this.roles.get(data.role.id) || new Role(this.client, data.role, this),
@@ -150,12 +164,19 @@ export class Group extends Base {
 	}
 
 	/**
-	 * Function to retrieve all rolesets
-	 * @returns {Collection}
+	 * Function to retrieve all rolesets.
+	 *
+	 * @returns {Collection} The rolesets in the group.
 	 */
 	public async getRoles(): Promise<Collection<Base['id'], Role>> {
 		const response = await this.client.http(`https://groups.roblox.com/v1/groups/${this.id}/roles`, {
 			method: 'GET',
+		}, {
+			400: {
+				3: (errResponse): Error => {
+					return new ItemNotFound('Group is invalid', errResponse, Group);
+				},
+			},
 		});
 		for (const data of response.data.roles) {
 			const role = this.client.roles.get(data.id);
@@ -165,9 +186,10 @@ export class Group extends Base {
 	}
 
 	/**
-	 * Shouts on the group
-	 * @param {string} message The content of the shout
-	 * @returns {Shout} The posted shout
+	 * Shouts a message on the group.
+	 *
+	 * @param {string} message The content of the shout.
+	 * @returns {Shout} The posted shout.
 	 */
 	public async shout(message: string): Promise<Shout> {
 		if (typeof message !== 'string') throw new TypeError('Argument 1 must be a string');
@@ -177,35 +199,28 @@ export class Group extends Base {
 			data: {
 				message: message,
 			},
-		}).catch((err: AxiosError) => {
-			const errResponse = err.response;
-			if (errResponse) {
-				switch (errResponse.status) {
-					case 400: {
-						switch (errResponse.data.errors[1].code) {
-							case 1: {
-								throw new Error('Group is invalid');
-							}
-							case 6: {
-								throw new Error('Lacking permissions');
-							}
-							case 7: {
-								throw new Error('Empty shout not possible');
-							}
-						}
-						break;
-					}
-				}
-			}
-			throw err;
+		}, {
+			400: {
+				1: (errResponse): Error => {
+					return new ItemNotFound('Group is invalid', errResponse, Group);
+				},
+				6: (errResponse): Error => {
+					return new MissingPermissions('MANAGE_STATUS', errResponse, this);
+				},
+				7: new Error('Empty shout not possible'),
+			},
+			500: {
+				0: new Error('Shout too long'),
+			},
 		});
 		return new Shout(this.client, response as unknown as ShoutData, this);
 	}
 
 	/**
-	 * Updates the group's description
-	 * @param {string} description The new description for the group
-	 * @returns {Group} This group, with the updated description
+	 * Updates the group's description.
+	 *
+	 * @param {string} description The new description for the group.
+	 * @returns {Group} This group, with the updated description.
 	 */
 	public async setDescription(description: string): Promise<Group> {
 		if (typeof description !== 'string') throw new TypeError('argument 1 must be a string');
@@ -215,35 +230,19 @@ export class Group extends Base {
 			data: {
 				description: description,
 			},
-		}).catch((err: AxiosError) => {
-			const errResponse = err.response;
-			if (errResponse) {
-				switch (errResponse.status) {
-					case 400: {
-						switch (errResponse.data.errors[1].code) {
-							case 1: {
-								throw new Error('Group is invalid');
-							}
-							case 29: {
-								throw new Error('Empty description not possible');
-							}
-						}
-						break;
-					}
-					case 403: {
-						switch (errResponse.data.errors[1].code) {
-							case 18: {
-								throw new Error('Description too long');
-							}
-							case 23: {
-								throw new Error('Lacking permissions');
-							}
-						}
-						break;
-					}
-				}
-			}
-			throw err;
+		}, {
+			400: {
+				1: (errResponse): Error => {
+					return new ItemNotFound('Group is invalid', errResponse, Group);
+				},
+				29: new Error('Empty description not possible'),
+			},
+			403: {
+				18: new Error('Description too long'),
+				23: (errResponse): Error => {
+					return new MissingPermissions('MANAGE_GROUP', errResponse, this);
+				},
+			},
 		});
 		this.description = description;
 		return this;

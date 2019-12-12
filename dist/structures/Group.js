@@ -6,6 +6,8 @@ const User_1 = require("./User");
 const Role_1 = require("./Role");
 const GroupMember_1 = require("./GroupMember");
 const Shout_1 = require("./Shout");
+const Util_1 = require("../util/Util");
+const Errors_1 = require("../util/Errors");
 class Group extends Base_1.Base {
     constructor(client, data) {
         super(client, data.id);
@@ -46,6 +48,12 @@ class Group extends Base_1.Base {
             throw new TypeError('Argument 1 must be a user instance');
         const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
             method: 'GET',
+        }, {
+            400: {
+                3: (errResponse) => {
+                    return new Errors_1.ItemNotFound('User is invalid', errResponse, User_1.User);
+                },
+            },
         });
         const userGroups = response.data.data;
         for (const groupResponse of userGroups) {
@@ -74,7 +82,13 @@ class Group extends Base_1.Base {
     }
     async getMembers() {
         const url = `https://groups.roblox.com/v1/groups/${this.id}/users`;
-        this.members = await this.client.util.getPages(url, GroupMember_1.GroupMember, this, (data) => {
+        this.members = await Util_1.getPages(url, GroupMember_1.GroupMember, this, {
+            400: {
+                1: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                },
+            },
+        }, (data) => {
             return {
                 user: this.client.users.get(data.user.userId) || new User_1.User(this.client, data.user),
                 role: this.roles.get(data.role.id) || new Role_1.Role(this.client, data.role, this),
@@ -85,6 +99,12 @@ class Group extends Base_1.Base {
     async getRoles() {
         const response = await this.client.http(`https://groups.roblox.com/v1/groups/${this.id}/roles`, {
             method: 'GET',
+        }, {
+            400: {
+                3: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                },
+            },
         });
         for (const data of response.data.roles) {
             const role = this.client.roles.get(data.id);
@@ -101,27 +121,19 @@ class Group extends Base_1.Base {
             data: {
                 message: message,
             },
-        }).catch((err) => {
-            const errResponse = err.response;
-            if (errResponse) {
-                switch (errResponse.status) {
-                    case 400: {
-                        switch (errResponse.data.errors[1].code) {
-                            case 1: {
-                                throw new Error('Group is invalid');
-                            }
-                            case 6: {
-                                throw new Error('Lacking permissions');
-                            }
-                            case 7: {
-                                throw new Error('Empty shout not possible');
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            throw err;
+        }, {
+            400: {
+                1: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                },
+                6: (errResponse) => {
+                    return new Errors_1.MissingPermissions('MANAGE_STATUS', errResponse, this);
+                },
+                7: new Error('Empty shout not possible'),
+            },
+            500: {
+                0: new Error('Shout too long'),
+            },
         });
         return new Shout_1.Shout(this.client, response, this);
     }
@@ -134,35 +146,19 @@ class Group extends Base_1.Base {
             data: {
                 description: description,
             },
-        }).catch((err) => {
-            const errResponse = err.response;
-            if (errResponse) {
-                switch (errResponse.status) {
-                    case 400: {
-                        switch (errResponse.data.errors[1].code) {
-                            case 1: {
-                                throw new Error('Group is invalid');
-                            }
-                            case 29: {
-                                throw new Error('Empty description not possible');
-                            }
-                        }
-                        break;
-                    }
-                    case 403: {
-                        switch (errResponse.data.errors[1].code) {
-                            case 18: {
-                                throw new Error('Description too long');
-                            }
-                            case 23: {
-                                throw new Error('Lacking permissions');
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            throw err;
+        }, {
+            400: {
+                1: (errResponse) => {
+                    return new Errors_1.ItemNotFound('Group is invalid', errResponse, Group);
+                },
+                29: new Error('Empty description not possible'),
+            },
+            403: {
+                18: new Error('Description too long'),
+                23: (errResponse) => {
+                    return new Errors_1.MissingPermissions('MANAGE_GROUP', errResponse, this);
+                },
+            },
         });
         this.description = description;
         return this;

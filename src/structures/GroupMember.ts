@@ -3,6 +3,7 @@ import { Client } from './Client';
 import { User } from './User';
 import { Group } from './Group';
 import { Role } from './Role';
+import { ItemNotFound, MissingPermissions } from '../util/Errors';
 interface GroupMemberData {
 	role: Role;
 	user: User;
@@ -44,12 +45,20 @@ export class GroupMember extends Base {
 			},
 		}, {
 			400: {
-				1: 'Group is invalid',
-				2: 'Role is invalid',
-				3: 'User is invalid',
+				1: (errResponse): Error => {
+					return new ItemNotFound('Group is invalid', errResponse, Group);
+				},
+				2: (errResponse): Error => {
+					return new ItemNotFound('Role is invalid', errResponse, Role);
+				},
+				3: (errResponse): Error => {
+					return new ItemNotFound('GroupMember is invalid', errResponse, GroupMember);
+				},
 			},
 			403: {
-				4: 'Lacking permissions',
+				4: (errResponse): Error => {
+					return new MissingPermissions('MANAGE_ROLES', errResponse, this.group);
+				},
 			},
 		});
 		this.role = role;

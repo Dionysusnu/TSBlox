@@ -8,4 +8,7 @@ export { GroupMember } from './structures/GroupMember';
 export { Role } from './structures/Role';
 export { Shout } from './structures/Shout';
 export { User } from './structures/User';
-export { default as Util } from './util/Util';
+import * as Util from './util/Util';
+export { Util };
+import * as Errors from './util/Errors';
+export { Errors };

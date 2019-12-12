@@ -1,4 +1,2 @@
-declare const _default: {
-    getPages: any;
-};
-export default _default;
+export declare type Constructor<T> = new (...args: any[]) => T;
+export { getPages } from './getPages';

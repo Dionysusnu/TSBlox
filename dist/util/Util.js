@@ -1,5 +1,4 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    getPages: require('./getPages').default,
-};
+var getPages_1 = require("./getPages");
+exports.getPages = getPages_1.getPages;
