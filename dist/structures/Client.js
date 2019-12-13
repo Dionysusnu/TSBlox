@@ -203,7 +203,6 @@ class Client extends events_1.default {
         return new User_1.User(this, response.data);
     }
     async getUserByName(name) {
-        var _a;
         const response = await this.http('https://users.roblox.com/v1/usernames/users', {
             method: 'POST',
             data: {
@@ -212,7 +211,10 @@ class Client extends events_1.default {
                 ],
             },
         }, {});
-        return await this.getUser((_a = response.data.data[0]) === null || _a === void 0 ? void 0 : _a.id);
+        if (!response.data.data[0]) {
+            throw new Errors_1.ItemNotFoundError('Username is invalid', response, User_1.User);
+        }
+        return await this.getUser(response.data.data[0].id);
     }
 }
 exports.Client = Client;

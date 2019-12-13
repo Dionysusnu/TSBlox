@@ -293,6 +293,9 @@ export class Client extends EventEmitter {
 				],
 			},
 		}, {});
-		return await this.getUser(response.data.data[0]?.id);
+		if (!response.data.data[0]) {
+			throw new ItemNotFoundError('Username is invalid', response, User);
+		}
+		return await this.getUser(response.data.data[0].id);
 	}
 }

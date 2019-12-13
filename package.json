@@ -1,6 +1,6 @@
 {
 	"name": "tsblox",
-	"version": "2.6.2",
+	"version": "2.6.3",
 	"description": "An object-oriented library to interact with the roblox api",
 	"main": "dist/Structures.js",
 	"scripts": {
