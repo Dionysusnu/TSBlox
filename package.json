@@ -1,6 +1,6 @@
 {
 	"name": "tsblox",
-	"version": "2.6.3",
+	"version": "2.6.4",
 	"description": "An object-oriented library to interact with the roblox api",
 	"main": "dist/Structures.js",
 	"scripts": {
@@ -21,7 +21,8 @@
 	},
 	"homepage": "https://github.com/Dionysusnu/TSBlox#readme",
 	"dependencies": {
-		"axios": "^0.19.0"
+		"axios": "^0.19.0",
+		"tslib": "1.10.0"
 	},
 	"devDependencies": {
 		"@types/node": "^12.12.17",
