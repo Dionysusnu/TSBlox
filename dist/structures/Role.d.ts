@@ -10,6 +10,7 @@ export interface RoleData {
 export declare class Role extends Base {
     readonly group: Group;
     rank: number;
+    name: string;
     memberCount?: number;
     constructor(client: Client, data: RoleData, group: Group);
     update(data: RoleData): void;

@@ -14,6 +14,7 @@ export interface RoleData {
 export class Role extends Base {
 	public readonly group: Group;
 	public rank: number;
+	public name: string;
 	public memberCount?: number;
 	public constructor(client: Client, data: RoleData, group: Group) {
 		if (!(group instanceof Group)) throw new TypeError('argument 3 must be a group instance');
@@ -25,7 +26,7 @@ export class Role extends Base {
 		/**
 		 * @property {string} name The name of this roleset
 		 */
-		Object.defineProperty(this, 'name', { value: data.name });
+		this.name = data.name;
 		/**
 		 * @property {integer} rank An integer between 1-255 representing the order of the roleset in the group
 		 */
