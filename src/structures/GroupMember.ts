@@ -64,4 +64,32 @@ export class GroupMember extends Base {
 		this.role = role;
 		return this;
 	}
+	
+	/**
+	 * Kicks the member out of the group
+	 * @returns {User} The user corresponding to this member
+	 */
+	public async exile(): Promise<User> {
+		await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
+			method: 'DELETE',
+		}, {
+			400: {
+				1: (errResponse): Error => {
+					return new ItemNotFoundError('Group is invalid', errResponse, Group);
+				},
+				3: (errResponse): Error => {
+					return new ItemNotFoundError('GroupMember is invalid', errResponse, GroupMember);
+				},
+			},
+			403: {
+				4: (errResponse): Error => {
+					return new MissingPermissionsError('EXILE_MEMBER', errResponse, this.group);
+				},
+			},
+			503: {//todo: make new RobloxAPIError class
+				18: new Error('Roblox API unavailable'),
+			},
+		});
+		return this.user;
+	}
 }
