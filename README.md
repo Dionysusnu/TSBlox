@@ -1,4 +1,4 @@
-# NodeRoblox
-View the documentation at https://dionysusnu.github.io/NodeRoblox/
+# TSBlox
+View the documentation at https://dionysusnu.github.io/TSBlox/
 ## Install
-`npm i @dionysusnu/noderoblox`
+`npm i tsblox`
