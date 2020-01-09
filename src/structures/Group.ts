@@ -178,10 +178,13 @@ export class Group extends Base {
 				},
 			},
 		});
+		let memberCount = 0;
 		for (const data of response.data.roles) {
 			const role = this.client.roles.get(data.id);
 			role && role.update(data) || new Role(this.client, data, this);
+			memberCount += data.memberCount;
 		}
+		this.memberCount = memberCount;
 		return this.roles;
 	}
 

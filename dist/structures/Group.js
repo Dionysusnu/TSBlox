@@ -106,10 +106,13 @@ class Group extends Base_1.Base {
                 },
             },
         });
+        let memberCount = 0;
         for (const data of response.data.roles) {
             const role = this.client.roles.get(data.id);
             role && role.update(data) || new Role_1.Role(this.client, data, this);
+            memberCount += data.memberCount;
         }
+        this.memberCount = memberCount;
         return this.roles;
     }
     async shout(message) {

@@ -38,5 +38,28 @@ class GroupMember extends Base_1.Base {
         this.role = role;
         return this;
     }
+    async exile() {
+        await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
+            method: 'DELETE',
+        }, {
+            400: {
+                1: (errResponse) => {
+                    return new Errors_1.ItemNotFoundError('Group is invalid', errResponse, Group_1.Group);
+                },
+                3: (errResponse) => {
+                    return new Errors_1.ItemNotFoundError('GroupMember is invalid', errResponse, GroupMember);
+                },
+            },
+            403: {
+                4: (errResponse) => {
+                    return new Errors_1.MissingPermissionsError('EXILE_MEMBER', errResponse, this.group);
+                },
+            },
+            503: {
+                18: new Error('Roblox API unavailable'),
+            },
+        });
+        return this.user;
+    }
 }
 exports.GroupMember = GroupMember;

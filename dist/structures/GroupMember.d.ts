@@ -13,5 +13,6 @@ export declare class GroupMember extends Base {
     role: Role;
     constructor(client: Client, data: GroupMemberData, group: Group);
     setRole(role: Role): Promise<GroupMember>;
+    exile(): Promise<User>;
 }
 export {};

@@ -64,7 +64,7 @@ export class GroupMember extends Base {
 		this.role = role;
 		return this;
 	}
-	
+
 	/**
 	 * Kicks the member out of the group
 	 * @returns {User} The user corresponding to this member
@@ -86,7 +86,7 @@ export class GroupMember extends Base {
 					return new MissingPermissionsError('EXILE_MEMBER', errResponse, this.group);
 				},
 			},
-			503: {//todo: make new RobloxAPIError class
+			503: { // todo: make new RobloxAPIError class
 				18: new Error('Roblox API unavailable'),
 			},
 		});
