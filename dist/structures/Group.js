@@ -138,7 +138,7 @@ class Group extends Base_1.Base {
                 0: new Error('Shout too long'),
             },
         });
-        return new Shout_1.Shout(this.client, response, this);
+        return new Shout_1.Shout(this.client, response.data, this);
     }
     async setDescription(description) {
         if (typeof description !== 'string')

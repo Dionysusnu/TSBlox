@@ -216,7 +216,7 @@ export class Group extends Base {
 				0: new Error('Shout too long'),
 			},
 		});
-		return new Shout(this.client, response as unknown as ShoutData, this);
+		return new Shout(this.client, response.data, this);
 	}
 
 	/**
