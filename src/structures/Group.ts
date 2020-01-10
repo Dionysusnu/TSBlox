@@ -97,6 +97,10 @@ export class Group extends Base {
 		this.isLocked = data.isLocked;
 	}
 
+	public async refresh(): Promise<this> {
+		return await this.client.getGroup(this.id, this);
+	}
+
 	private async getOwner(owner: UserData): Promise<GroupMember> {
 		const member = await this.member(this.client.users.get(owner.userId) || new User(this.client, owner)).catch(err => {
 			throw err;

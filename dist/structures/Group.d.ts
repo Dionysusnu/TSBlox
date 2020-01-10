@@ -31,6 +31,7 @@ export declare class Group extends Base {
     members: Collection<Base['id'], GroupMember>;
     constructor(client: Client, data: GroupData);
     update(data: GroupData): void;
+    refresh(): Promise<this>;
     private getOwner;
     member(user: User): Promise<GroupMember>;
     getMembers(): Promise<Collection<Base['id'], GroupMember>>;

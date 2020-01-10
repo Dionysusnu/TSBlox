@@ -34,6 +34,9 @@ class Group extends Base_1.Base {
         this.isPublic = data.publicEntryAllowed;
         this.isLocked = data.isLocked;
     }
+    async refresh() {
+        return await this.client.getGroup(this.id, this);
+    }
     async getOwner(owner) {
         const member = await this.member(this.client.users.get(owner.userId) || new User_1.User(this.client, owner)).catch(err => {
             throw err;

@@ -243,7 +243,9 @@ export class Client extends EventEmitter {
 	 * @param {number} id The id of the group to get.
 	 * @returns {Group} The requested group.
 	 */
-	public async getGroup(id: number): Promise<Group> {
+	public async getGroup<G extends Group>(id: number, cachedGroup: G): Promise<G>;
+	public async getGroup(id: number): Promise<Group>;
+	public async getGroup(id: number, cachedGroup?: Group): Promise<Group> {
 		const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`, {
 			method: 'GET',
 		}, {
@@ -256,10 +258,10 @@ export class Client extends EventEmitter {
 				return new ItemNotFoundError('Group ID is invalid', errResponse, Group);
 			},
 		});
-		const cached = this.groups.get(id);
-		if (cached) {
-			cached.update(response.data);
-			return cached;
+		cachedGroup = cachedGroup ?? this.groups.get(id);
+		if (cachedGroup) {
+			cachedGroup.update(response.data);
+			return cachedGroup;
 		}
 		return new Group(this, response.data);
 	}

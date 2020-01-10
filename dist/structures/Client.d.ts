@@ -30,6 +30,7 @@ export declare class Client extends EventEmitter {
     private rejectCatcher;
     private handleHttpQueue;
     http(url: string, config: HttpConfig, catchConfig: CatchConfig): Promise<AxiosResponse>;
+    getGroup<G extends Group>(id: number, cachedGroup: G): Promise<G>;
     getGroup(id: number): Promise<Group>;
     getUser(id: number): Promise<User>;
     getUserByName(name: string): Promise<User>;

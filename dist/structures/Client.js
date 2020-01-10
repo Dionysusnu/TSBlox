@@ -163,7 +163,7 @@ class Client extends events_1.default {
             }
         });
     }
-    async getGroup(id) {
+    async getGroup(id, cachedGroup) {
         const response = await this.http(`https://groups.roblox.com/v1/groups/${id}`, {
             method: 'GET',
         }, {
@@ -176,10 +176,10 @@ class Client extends events_1.default {
                 return new Errors_1.ItemNotFoundError('Group ID is invalid', errResponse, Group_1.Group);
             },
         });
-        const cached = this.groups.get(id);
-        if (cached) {
-            cached.update(response.data);
-            return cached;
+        cachedGroup = (cachedGroup !== null && cachedGroup !== void 0 ? cachedGroup : this.groups.get(id));
+        if (cachedGroup) {
+            cachedGroup.update(response.data);
+            return cachedGroup;
         }
         return new Group_1.Group(this, response.data);
     }
