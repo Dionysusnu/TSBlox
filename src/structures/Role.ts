@@ -1,13 +1,8 @@
 import { Base } from './Base';
 import { Client } from './Client';
 import { Group } from './Group';
-
-export interface RoleData {
-	id: number;
-	name: string;
-	rank: number;
-	memberCount?: number;
-}
+import { typeCheck } from '../util/Util';
+import { RoleData } from '../util/Schemes';
 /**
  * Represents a roleset in a group
  */
@@ -17,7 +12,7 @@ export class Role extends Base {
 	public name: string;
 	public memberCount?: number;
 	public constructor(client: Client, data: RoleData, group: Group) {
-		if (!(group instanceof Group)) throw new TypeError('argument 3 must be a group instance');
+		typeCheck(group, Group);
 		super(client, data.id);
 		/**
 		 * @property {Group} group The group this roleset belongs to

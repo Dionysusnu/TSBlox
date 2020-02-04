@@ -1,12 +1,9 @@
 import { Client } from './Client';
 import { Group } from './Group';
-import { User, UserData } from './User';
+import { User } from './User';
 import { GroupMember } from './GroupMember';
-export interface ShoutData {
-	body: string;
-	poster: UserData;
-	updated: string;
-}
+import { ShoutData, UserData } from '../util/Schemes';
+
 /**
  * Represents a group shout.
  * To create a new shout, use Group.shout()

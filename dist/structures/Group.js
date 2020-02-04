@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = require("tslib");
+const joi_1 = tslib_1.__importDefault(require("joi"));
 const Base_1 = require("./Base");
 const Collection_1 = require("./Collection");
 const User_1 = require("./User");
@@ -8,6 +10,7 @@ const GroupMember_1 = require("./GroupMember");
 const Shout_1 = require("./Shout");
 const Util_1 = require("../util/Util");
 const Errors_1 = require("../util/Errors");
+const GroupData = joi_1.default.object({});
 class Group extends Base_1.Base {
     constructor(client, data) {
         super(client, data.id);
@@ -47,8 +50,7 @@ class Group extends Base_1.Base {
         return member;
     }
     async member(user) {
-        if (!(user instanceof User_1.User))
-            throw new TypeError('Argument 1 must be a user instance');
+        Util_1.typeCheck(user, User_1.User);
         const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
             method: 'GET',
         }, {

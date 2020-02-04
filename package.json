@@ -21,15 +21,19 @@
 	},
 	"homepage": "https://github.com/Dionysusnu/TSBlox#readme",
 	"dependencies": {
-		"axios": "^0.19.0",
+		"@hapi/joi": "^17.0.0",
+		"axios": "^0.19.1",
 		"tslib": "1.10.0"
 	},
 	"devDependencies": {
-		"@types/node": "^12.12.17",
-		"@typescript-eslint/eslint-plugin": "^2.11.0",
-		"@typescript-eslint/parser": "^2.11.0",
-		"eslint": "^6.7.2",
-		"typedoc": "^0.15.4",
-		"typescript": "^3.7.3"
+		"@types/joi": "^14.3.4",
+		"@types/node": "^12.12.24",
+		"@typescript-eslint/eslint-plugin": "^2.15.0",
+		"@typescript-eslint/parser": "^2.15.0",
+		"eslint": "^6.8.0",
+		"eslint-config-airbnb-typescript": "^6.3.1",
+		"eslint-plugin-import": "2.18.2",
+		"typedoc": "^0.15.6",
+		"typescript": "^3.7.4"
 	}
 }

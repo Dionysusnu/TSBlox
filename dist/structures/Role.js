@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Base_1 = require("./Base");
 const Group_1 = require("./Group");
+const Util_1 = require("../util/Util");
 class Role extends Base_1.Base {
     constructor(client, data, group) {
-        if (!(group instanceof Group_1.Group))
-            throw new TypeError('argument 3 must be a group instance');
+        Util_1.typeCheck(group, Group_1.Group);
         super(client, data.id);
         this.group = group;
         this.name = data.name;

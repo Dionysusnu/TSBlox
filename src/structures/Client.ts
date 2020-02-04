@@ -47,17 +47,11 @@ export class Client extends EventEmitter {
 	private httpIntervalId?: NodeJS.Timeout;
 	private cookie?: string;
 	private token?: string;
-	public debug?: boolean;
 	/**
-	 * @param {string} [cookie] The .ROBLOSECURITY cookie to use when this client makes requests to the API. Shortcut for client.login(cookie).
+	 *
 	 */
-	public constructor(cookie: string) {
+	public constructor() {
 		super();
-		if (cookie) {
-			this.login(cookie).catch(err => {
-				this.debug && console.error(err);
-			});
-		}
 		/**
 		 * @property {Collection} badges A collection with all cached badges.
 		 */
@@ -102,7 +96,6 @@ export class Client extends EventEmitter {
 			await group.shout('this will fail');
 		} catch (e) {
 			if (!(e instanceof MissingPermissionsError)) {
-				this.debug && console.error(e);
 				throw e;
 			}
 			this.emit('ready', new Date());
@@ -137,7 +130,6 @@ export class Client extends EventEmitter {
 		if (this.httpQueue.length) {
 			const request = this.httpQueue[0];
 			this.httpQueue.shift();
-			this.debug && console.log(`${request[1].method} request to ${request[0]}`);
 			const url = request[0];
 			const config = request[1];
 			const resolve = request[2];
@@ -241,7 +233,7 @@ export class Client extends EventEmitter {
 	 * Gets a group or updates its cached data.
 	 *
 	 * @param {number} id The id of the group to get.
-	 * @returns {Group} The requested group.
+	 * @returns {Promise<Group>} The requested group.
 	 */
 	public async getGroup<G extends Group>(id: number, cachedGroup: G): Promise<G>;
 	public async getGroup(id: number): Promise<Group>;

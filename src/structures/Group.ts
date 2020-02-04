@@ -1,25 +1,14 @@
 import { Base } from './Base';
 import { Collection } from './Collection';
 import { Client } from './Client';
-import { User, UserData } from './User';
-import { Role, RoleData } from './Role';
+import { User } from './User';
+import { Role } from './Role';
 import { GroupMember } from './GroupMember';
-import { Shout, ShoutData } from './Shout';
-import { getPages } from '../util/Util';
+import { Shout } from './Shout';
+import { getPages, typeCheck } from '../util/Util';
 import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
-
-interface GroupData {
-	owner: UserData;
-	shout: ShoutData;
-	memberCount: number;
-	isBuildersClubOnly: boolean;
-	hasClan: boolean;
-	publicEntryAllowed: boolean;
-	isLocked: boolean;
-	id: number;
-	name: string;
-	description: string;
-}
+import { RoleData, UserData, GroupData, ShoutData } from '../util/Schemes';
+import Joi from 'joi';
 
 interface GroupMemberResponse {
 	role: RoleData;
@@ -51,7 +40,7 @@ export class Group extends Base {
 		 */
 		this.description = data.description;
 		/**
-		 * @property {User} owner The owner of this group.
+		 * @property {Promise<GroupMember>} owner The owner of this group.
 		 */
 		this.owner = this.getOwner(data.owner);
 		/**
@@ -112,7 +101,7 @@ export class Group extends Base {
 	}
 
 	public async member(user: User): Promise<GroupMember> {
-		if (!(user instanceof User)) throw new TypeError('Argument 1 must be a user instance');
+		typeCheck(user, User);
 		const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
 			method: 'GET',
 		}, {
@@ -199,7 +188,7 @@ export class Group extends Base {
 	 * @returns {Shout} The posted shout.
 	 */
 	public async shout(message: string): Promise<Shout> {
-		if (typeof message !== 'string') throw new TypeError('Argument 1 must be a string');
+		typeCheck(message, 'string');
 		const url = `https://groups.roblox.com/v1/groups/${this.id}/status`;
 		const response = await this.client.http(url, {
 			method: 'PATCH',
@@ -220,6 +209,7 @@ export class Group extends Base {
 				0: new Error('Shout too long'),
 			},
 		});
+		Joi.assert(response.data, ShoutData);
 		return new Shout(this.client, response.data, this);
 	}
 

@@ -1,3 +1,4 @@
+import Joi from 'joi';
 import { Base } from './Base';
 import { Collection } from './Collection';
 import { Client } from './Client';
@@ -17,6 +18,7 @@ interface GroupData {
     name: string;
     description: string;
 }
+declare const GroupData: Joi.ObjectSchema;
 export declare class Group extends Base {
     name: string;
     description: string;

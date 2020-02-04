@@ -5,13 +5,7 @@ import { Collection } from './Collection';
 import { Client } from './Client';
 import { getPages } from '../util/Util';
 import { ItemNotFoundError } from '../util/Errors';
-
-export type BCMembershipType = 'None' | 'BC' | 'TBC' | 'OBC' | 'RobloxPremium';
-export interface UserData {
-	username: string;
-	buildersClubMembershipType: BCMembershipType;
-	userId: number;
-}
+import { UserData, BCMembershipType } from '../util/Schemes';
 
 /**
  * Represents a user on roblox
@@ -21,6 +15,7 @@ export class User extends Base {
 	public membership: BCMembershipType;
 	public badges: Collection<Base['id'], Badge>;
 	public constructor(client: Client, data: UserData) {
+		UserData.validate(data);
 		super(client, data.userId);
 		/**
 		 * @property {string} username The username of this user
