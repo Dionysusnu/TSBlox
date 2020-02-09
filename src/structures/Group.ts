@@ -7,10 +7,11 @@ import Role from './Role';
 import GroupMember from './GroupMember';
 import Shout from './Shout';
 import { getPages, typeCheck } from '../util/Util';
-import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
+import MissingPermissionsError from '../util/MissingPermissionsError';
 import {
   RoleData, UserData, GroupData, ShoutData,
 } from '../util/Schemes';
+import api from '../util/ApiSchemes';
 
 interface GroupMemberResponse {
   role: RoleData;
@@ -113,7 +114,7 @@ export default class Group extends Base {
     return member;
   }
 
-  public async member(user: User): Promise<GroupMember> {
+  public async member(user: User): Promise<GroupMember | undefined> {
     typeCheck(user, User);
     const response = await this.client.http(`https://groups.roblox.com/v2/users/${user.id}/groups/roles`, {
       method: 'GET',
@@ -123,7 +124,7 @@ export default class Group extends Base {
       },
     });
     const userGroups = response.data.data;
-    for (const groupResponse of userGroups) {
+    userGroups.forEach((groupResponse) => {
       if (groupResponse.group.id === this.id) {
         const cached = this.members.get(user.id);
         const groupRole = this.roles.get(groupResponse.role.id);
@@ -136,12 +137,12 @@ export default class Group extends Base {
           return cached;
         }
         return new GroupMember(this.client, {
-          role: groupRole || new Role(this.client, groupResponse.role, this),
+          role: groupRole ?? new Role(this.client, groupResponse.role, this),
           user,
         }, this);
       }
-    }
-    throw new ItemNotFoundError('User not in group', response, GroupMember);
+    });
+    return undefined;
   }
 
   /**
@@ -176,11 +177,15 @@ export default class Group extends Base {
       },
     });
     let memberCount = 0;
-    for (const data of response.data.roles) {
-      const role = this.client.roles.get(data.id);
-      role && role.update(data) || new Role(this.client, data, this);
+    response.data.roles.forEach((data) => {
+      let role = this.client.roles.get(data.id);
+      if (role) {
+        role.update(data);
+      } else {
+        role = new Role(this.client, data);
+      }
       memberCount += data.memberCount;
-    }
+    });
     this.memberCount = memberCount;
     return this.roles;
   }

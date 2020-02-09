@@ -1,15 +1,16 @@
-// export { Asset } from './src/structures/Asset';
 import * as Util from './util/Util';
-import * as Errors from './util/Errors';
+import MissingPermissionsError from './util/MissingPermissionsError';
 
-export { Badge } from './structures/Badge';
-export { Base } from './structures/Base';
-export { Client } from './structures/Client';
-export { Collection } from './structures/Collection';
-export { Group } from './structures/Group';
-export { GroupMember } from './structures/GroupMember';
-export { Role } from './structures/Role';
-export { Shout } from './structures/Shout';
-export { User } from './structures/User';
 export { Util };
-export { Errors };
+export { MissingPermissionsError };
+
+// export { default as Asset } from './src/structures/Asset';
+// export { default as Badge } from './structures/Badge';
+export { default as Base } from './structures/Base';
+export { default as Client } from './structures/Client';
+export { default as Collection } from './structures/Collection';
+export { default as Group } from './structures/Group';
+export { default as GroupMember } from './structures/GroupMember';
+export { default as Role } from './structures/Role';
+export { default as Shout } from './structures/Shout';
+export { default as User } from './structures/User';

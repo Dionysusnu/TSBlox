@@ -1,9 +1,9 @@
-import { Base } from './Base';
-import { Client } from './Client';
-import { User } from './User';
-import { Group } from './Group';
-import { Role } from './Role';
-import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
+import Base from './Base';
+import Client from './Client';
+import User from './User';
+import Group from './Group';
+import Role from './Role';
+import MissingPermissionsError from '../util/MissingPermissionsError';
 
 interface GroupMemberData {
   role: Role;
@@ -13,7 +13,7 @@ interface GroupMemberData {
 /**
  * Represents a user in a group
  */
-export class GroupMember extends Base {
+export default class GroupMember extends Base {
   public readonly user: User;
 
   public readonly group: Group;
@@ -23,24 +23,24 @@ export class GroupMember extends Base {
   public constructor(client: Client, data: GroupMemberData, group: Group) {
     super(client, data.user.id);
     /**
-		 * @property {User} user The user
-		 */
+     * @property {User} user The user
+     */
     this.user = data.user;
     /**
-		 * @property {Group} group The group this member is part of
-		 */
+     * @property {Group} group The group this member is part of
+     */
     this.group = group;
     /**
-		 * @property {Role} role The current role of this member
-		 */
+     * @property {Role} role The current role of this member
+     */
     this.role = data.role;
   }
 
   /**
-	 * Sets the member's role
-	 * @param {Role} role The new role for this user
-	 * @returns {GroupMember} This member, with the updated role
-	 */
+   * Sets the member's role
+   * @param {Role} role The new role for this user
+   * @returns {GroupMember} This member, with the updated role
+   */
   public async setRole(role: Role): Promise<GroupMember> {
     await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
       method: 'PATCH',
@@ -62,9 +62,9 @@ export class GroupMember extends Base {
   }
 
   /**
-	 * Kicks the member out of the group
-	 * @returns {User} The user corresponding to this member
-	 */
+   * Kicks the member out of the group
+   * @returns {User} The user corresponding to this member
+   */
   public async exile(): Promise<User> {
     await this.client.http(`https://groups.roblox.com/v1/groups/${this.group.id}/users/${this.user.id}`, {
       method: 'DELETE',

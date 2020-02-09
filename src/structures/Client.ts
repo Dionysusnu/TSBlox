@@ -5,7 +5,7 @@ import User from './User';
 import Badge from './Badge';
 import Role from './Role';
 import Group from './Group';
-import { ItemNotFoundError, MissingPermissionsError } from '../util/Errors';
+import MissingPermissionsError from '../util/MissingPermissionsError';
 import Base from './Base';
 
 interface HttpConfig extends AxiosRequestConfig {
@@ -112,7 +112,7 @@ export default class Client extends EventEmitter {
     }
   }
 
-  private static rejectCatcher(catchConfig: CatchConfig, errResponse: AxiosResponse): void {
+  private static rejectCatcher(catchConfig: CatchConfig, errResponse: AxiosResponse): void | never {
     Object.entries(catchConfig).forEach(([status, message]) => {
       const parsedStatus = parseInt(status, 10);
       if (parsedStatus !== errResponse.status) return;
@@ -137,7 +137,6 @@ export default class Client extends EventEmitter {
   private async handleHttpQueue(): Promise<void> {
     if (this.httpQueue.length) {
       const request = this.httpQueue[0];
-      this.httpQueue.shift();
       const url = request[0];
       const config = request[1];
       const resolve = request[2];
@@ -184,10 +183,9 @@ export default class Client extends EventEmitter {
                   if (errResponse.data.errors[0].message === 'Token Validation Failed') {
                     return err.response;
                   }
-                  reject(errResponse.data.errors[0].message);
+                  throw errResponse.data.errors[0].message;
                 }
-                reject(err);
-                break;
+                throw err;
               }
             }
           }
@@ -197,6 +195,7 @@ export default class Client extends EventEmitter {
           this.token = response.headers['x-csrf-token'];
         }
         // If no error, resolve promise
+        this.httpQueue.shift();
         resolve(response);
       } catch (err) {
         reject(err);
