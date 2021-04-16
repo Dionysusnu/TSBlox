@@ -22,7 +22,7 @@
 	"homepage": "https://github.com/Dionysusnu/TSBlox#readme",
 	"dependencies": {
 		"@hapi/joi": "^17.0.0",
-		"axios": "^0.19.1",
+		"axios": "^0.21.1",
 		"tslib": "1.10.0"
 	},
 	"devDependencies": {
